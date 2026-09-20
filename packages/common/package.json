@@ -2,7 +2,7 @@
   "name": "@ai-chat-beat/common",
   "version": "1.0.0",
   "description": "common logic for AI-chat-beat chrome extension and RN projects",
-  "main": "./src/injected.ts",
+  "main": "./src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

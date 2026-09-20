@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "properties": {
+    "fullCacheHistory": {
+      "type": "array",
+      "id": "fullCacheHistory",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer"
+          },
+          "session_id": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "index": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sessionMap": {
+      "type": "array",
+      "id": "ChatIdTitleMap",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" }
+        }
+      }
+    }
+  }
+}

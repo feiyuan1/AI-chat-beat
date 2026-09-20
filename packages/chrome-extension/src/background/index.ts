@@ -1,0 +1,95 @@
+import { ReportChatsLogs } from '../adapters/logAdatper'
+import { ReportChats } from '../adapters/MetricAdapter'
+import {
+  CreateMonitorLog,
+  MonitorLogType,
+  reportFailedLogs,
+  reportFailedMetrics,
+  storeFailedLogs,
+} from '../adapters/utils'
+import { NOTIFICATION_KEY } from '../constants'
+import { RESOTRE_CHAT_CHROME_LOCAL } from '../constants/dev_env'
+import { classifyPromptWithFallback } from '../labels/semanticClassifier'
+import { CHROME_MESSAGE_TYPE, LabelDimension, StoreMessage } from '../types'
+import { loadLabelModelConfig } from '../utils/config-storage'
+import { log } from '../utils/debugger'
+import { startWsClient } from './dev-client'
+import { handleBatchStore } from './util'
+
+const timeStamp = performance.now()
+if (import.meta.env.MODE === 'development') {
+  startWsClient()
+}
+reportFailedLogs()
+reportFailedMetrics()
+
+chrome.runtime.onMessage.addListener((message: StoreMessage) => {
+  if (message.type !== CHROME_MESSAGE_TYPE.BATCH_CHAT_REQUESTS) {
+    return
+  }
+
+  if (RESOTRE_CHAT_CHROME_LOCAL) {
+    handleBatchStore(message.payload)
+  }
+
+  ReportChats({ chats: message.payload, aggregate: message.aggregate })
+  loadLabelModelConfig()
+    .then((config) => {
+      if (!config) {
+        throw new Error(NOTIFICATION_KEY)
+      }
+
+      return Promise.all(
+        message.payload.map(async (chat) => {
+          try {
+            const { labels, usage } = await classifyPromptWithFallback(chat.prompt, config)
+
+            return {
+              ...chat,
+              labels: (Object.keys(labels.labels) as LabelDimension[]).reduce(
+                (result, dimension) => {
+                  return { ...result, [dimension]: labels.labels[dimension].value }
+                },
+                {},
+              ),
+              usage,
+            }
+          } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : String(error)
+            const errorLog = CreateMonitorLog(
+              `classifyPromptWithFallback error: ${errorMessage}`,
+              MonitorLogType.ai_analyze_error,
+            )
+            storeFailedLogs([errorLog])
+            log('classifyPromptWithFallback error', errorMessage)
+            return chat
+          }
+        }),
+      )
+    })
+    .then((result) => {
+      if (!Array.isArray(result)) {
+        return
+      }
+      ReportChatsLogs(result)
+    })
+    .catch((err) => {
+      if (err?.message === NOTIFICATION_KEY) {
+        chrome.notifications.clear(NOTIFICATION_KEY)
+        chrome.notifications.create(NOTIFICATION_KEY, {
+          type: 'basic',
+          iconUrl: 'public/icons/icon.png',
+          title: 'AI Chat Beat',
+          message: '模型配置缺失，请打开 popup 进行配置,本轮 prompt 未打入标签',
+        })
+        ReportChatsLogs(message.payload)
+      }
+    })
+})
+
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message.type === 'GET_BUNDLE_TIMESTAMP') {
+    log('sw timestamp: ', timeStamp)
+    sendResponse(timeStamp)
+  }
+})

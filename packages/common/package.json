@@ -1,0 +1,15 @@
+{
+  "name": "@ai-chat-beat/common",
+  "version": "1.0.0",
+  "description": "common logic for AI-chat-beat chrome extension and RN projects",
+  "main": "./src/injected.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.20.3",
+    "typescript": "^7.0.2"
+  }
+}

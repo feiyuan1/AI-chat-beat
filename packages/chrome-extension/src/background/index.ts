@@ -32,6 +32,9 @@ chrome.runtime.onMessage.addListener((message: StoreMessage) => {
     handleBatchStore(message.payload)
   }
 
+  /**
+   * 需要考虑迁移
+   */
   ReportChats({ chats: message.payload, aggregate: message.aggregate })
   loadLabelModelConfig()
     .then((config) => {

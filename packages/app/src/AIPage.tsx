@@ -1,3 +1,4 @@
+import { handleAIChatRequestMessage, Message } from "@ai-chat-beat/common";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
@@ -10,7 +11,16 @@ const AIPage = () => {
   }, []);
 
   const onMessage = (event: { nativeEvent: { data: string } }) => {
-    console.log(event.nativeEvent.data);
+    try {
+      const message = JSON.parse(event.nativeEvent.data) as unknown as Message;
+      handleAIChatRequestMessage(message, {
+        resolve: (result) => {
+          console.log("resolve", result);
+        },
+      });
+    } catch (err) {
+      console.error("handle message error: ", err);
+    }
   };
 
   return (

@@ -1,15 +1,20 @@
-import { Platform } from '@ai-chat-beat/common'
-import { AdaptError, AdaptResult, AdaptSuccess, AdapterResultStatus } from '../../types/adapter'
+import { Platform } from "@ai-chat-beat/common";
+import {
+  AdaptError,
+  AdaptResult,
+  AdaptSuccess,
+  AdapterResultStatus,
+} from "../types";
 
 export function parseChatRequestBody(platform: Platform, body: unknown): any {
-  if (typeof body === 'string') {
-    return JSON.parse(body)
+  if (typeof body === "string") {
+    return JSON.parse(body);
   }
   if (body instanceof Uint8Array) {
-    const text = new TextDecoder().decode(body)
-    return JSON.parse(text)
+    const text = new TextDecoder().decode(body);
+    return JSON.parse(text);
   }
-  throw new Error(`unsupported body type for platform: ${platform}`)
+  throw new Error(`unsupported body type for platform: ${platform}`);
 }
 
 export function createPlatformError(platform: Platform) {
@@ -18,15 +23,15 @@ export function createPlatformError(platform: Platform) {
       status: AdapterResultStatus.error,
       message,
       platform,
-    }
-  }
+    };
+  };
 }
 
 export function createSuccess<T>(data: T): AdaptSuccess<T> {
   return {
     status: AdapterResultStatus.success,
     data,
-  }
+  };
 }
 
 export function createAdapterErrorBoundary<T extends AdaptResult>(
@@ -35,14 +40,14 @@ export function createAdapterErrorBoundary<T extends AdaptResult>(
 ) {
   return (...args: any[]) => {
     try {
-      return innerScript(...args)
+      return innerScript(...args);
     } catch (err) {
       const errorResult = {
         status: AdapterResultStatus.error,
         message: `${id}: ${err}`,
-      } as T
+      } as T;
 
-      return errorResult
+      return errorResult;
     }
-  }
+  };
 }

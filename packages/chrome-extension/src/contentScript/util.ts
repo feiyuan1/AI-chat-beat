@@ -73,12 +73,3 @@ export const reStoreMessages = () => {
     },
   )
 }
-
-export const reportLocalStroageErrorLogs = () => {
-  const errorLogs = getLocalStorage(LocalStoragekeys.errorLogs) || []
-  if (!errorLogs.length) {
-    return
-  }
-  storeFailedLogs(errorLogs)
-  removeLocalStorageKey(LocalStoragekeys.errorLogs)
-}

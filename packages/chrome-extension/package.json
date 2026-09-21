@@ -50,6 +50,7 @@
     "ws": "^8.20.0"
   },
   "dependencies": {
+    "@ai-chat-beat/common": "1.0.0",
     "uuid": "^14.0.0"
   }
 }

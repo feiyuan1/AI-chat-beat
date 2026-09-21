@@ -1,5 +1,5 @@
 import { CreateMonitorLog, MonitorLogType, storeFailedLogs } from '../adapters/utils'
-import { CHROME_MESSAGE_TYPE, Platform, StoreMessage } from '../types'
+import { CHROME_MESSAGE_TYPE, StoreMessage } from '../types'
 import { LocalStoragekeys } from '../types/localStorage'
 import { consoleError, log } from '../utils/debugger'
 import { getLocalStorage, removeLocalStorageKey, setLocalStorage } from '../utils/localStorage'
@@ -46,29 +46,6 @@ export const syncBundleInfo = () => {
   }, 2000)
 }
 
-export function isPlatformChatRequest(platform: Platform, path: string): boolean {
-  switch (platform) {
-    case Platform.deepseek:
-      return path.includes('/api/v0/chat/completion') || path.includes('/api/v0/chat/edit_message')
-    case Platform.yuanbao:
-      return path.startsWith('/api/chat/')
-    case Platform.qianwen:
-      return path.includes('/api/v2/chat')
-    case Platform.yiyan:
-      return path.includes('/aichat/api/conversation')
-    case Platform.chatglm:
-      return path.includes('/backend-api/assistant/stream')
-    case Platform.doubao:
-      return path.includes('/chat/completion')
-    case Platform.kimi:
-      return path.includes('/apiv2/kimi.gateway.chat.v1.ChatService/Chat')
-    case Platform.chatgpt:
-      return path.includes('/backend-api/f/conversation')
-    default:
-      return false
-  }
-}
-
 export const globalErrorBoundary = (fn: () => void) => {
   try {
     fn()
@@ -95,16 +72,6 @@ export const reStoreMessages = () => {
       removeLocalStorageKey(LocalStoragekeys.unStoredMessageList)
     },
   )
-}
-
-export const getPath = (url: string | URL) => {
-  if (url instanceof URL) {
-    return url.pathname
-  }
-  if (url.startsWith('/')) {
-    return url
-  }
-  return new URL(url).pathname
 }
 
 export const reportLocalStroageErrorLogs = () => {

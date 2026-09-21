@@ -1,27 +1,5 @@
-import { Platform } from '../../types'
+import { Platform } from '@ai-chat-beat/common'
 import { AdaptError, AdaptResult, AdaptSuccess, AdapterResultStatus } from '../../types/adapter'
-
-export const PLATFORM_HOSTS: Record<Platform, string[]> = {
-  [Platform.deepseek]: ['chat.deepseek.com'],
-  [Platform.yuanbao]: ['yuanbao.tencent.com'],
-  [Platform.qianwen]: ['www.qianwen.com'],
-  [Platform.yiyan]: ['wenxin.baidu.com'],
-  [Platform.chatglm]: ['chatglm.cn'],
-  [Platform.doubao]: ['www.doubao.com'],
-  [Platform.kimi]: ['www.kimi.com'],
-  [Platform.chatgpt]: ['chatgpt.com'],
-  [Platform.unknown]: [],
-}
-
-export function detectPlatform(url: string | URL): Platform {
-  const host = url instanceof URL ? url.hostname : new URL(url).hostname
-  for (const [platform, hosts] of Object.entries(PLATFORM_HOSTS)) {
-    if (hosts.some((h) => host === h || host.endsWith(`.${h}`))) {
-      return platform as Platform
-    }
-  }
-  return Platform.unknown
-}
 
 export function parseChatRequestBody(platform: Platform, body: unknown): any {
   if (typeof body === 'string') {

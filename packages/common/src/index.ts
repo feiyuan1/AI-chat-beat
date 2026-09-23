@@ -1,3 +1,9 @@
+export * from "./constants";
 export * from "./core";
 export { default as injectedScript } from "./injected/index";
+export * from "./localStorage/types";
+export * from "./localStorage/utils";
+export { initStorage } from "./storage";
+export { type Storage } from "./storage/types";
 export * from "./types";
+export * from "./utils";

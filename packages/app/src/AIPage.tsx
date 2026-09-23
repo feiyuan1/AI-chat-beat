@@ -1,18 +1,33 @@
-import { handleAIChatRequestMessage, Message } from "@ai-chat-beat/common";
+import {
+  handleAIChatRequestMessage,
+  Message,
+  reportStroageErrorLogs,
+} from "@ai-chat-beat/common";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 import originalInjected from "../injected.esbuild";
+import { MessageType } from "./types";
 
 const injected = originalInjected as unknown as string;
 const AIPage = () => {
   useEffect(() => {
-    console.log("typeof inejcted", typeof injected);
+    console.log("typeof inejcted:", typeof injected);
+  }, []);
+
+  useEffect(() => {
+    reportStroageErrorLogs((logs) => {
+      console.log("RN errorlogs", logs);
+    });
   }, []);
 
   const onMessage = (event: { nativeEvent: { data: string } }) => {
     try {
       const message = JSON.parse(event.nativeEvent.data) as unknown as Message;
+      if (message.type === MessageType.INJECTED_ERROR_LOGS) {
+        console.log("RN errorlogs from injected", message.payload);
+        return;
+      }
       handleAIChatRequestMessage(message, {
         resolve: (result) => {
           console.log("resolve", result);

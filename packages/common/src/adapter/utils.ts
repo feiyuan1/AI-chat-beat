@@ -1,4 +1,6 @@
+import { LocalStoragekeys } from "../localStorage/types";
 import { MonitorLog, MonitorLogType } from "../monitor/types";
+import { appendStorageItem } from "../storage";
 import { Platform } from "../types";
 import { consoleError } from "../utils/debugger";
 import { AdapterResultStatus, AdaptResult } from "./types";
@@ -7,7 +9,7 @@ export type AdaptErrorBoundaryParams<T> = {
   data: any;
   adapter: (...args: any[]) => AdaptResult<T>;
   resolve: (data: T) => void;
-  reject?: (error: unknown) => void;
+  reject?: (error: unknown) => Promise<void>;
 };
 
 export interface AdaptErrorLog extends MonitorLog {
@@ -29,7 +31,7 @@ export const createAdaptErrorLog = ({
   };
 };
 
-export const AdapterErrorBoundary = <T>({
+export const AdapterErrorBoundary = async <T>({
   data,
   adapter,
   resolve,
@@ -45,12 +47,12 @@ export const AdapterErrorBoundary = <T>({
     }
     resolve(result.data);
   } catch (error: any) {
-    // const log = createAdaptErrorLog({
-    //   msg: error.message || error,
-    //   platform: error.platform,
-    // });
-    // storeFailedLogs([log]);
+    const log = createAdaptErrorLog({
+      msg: error.message || error,
+      platform: error.platform,
+    });
+    await appendStorageItem(LocalStoragekeys.errorLogs, [log]);
     consoleError(error);
-    reject?.(error);
+    await reject?.(error);
   }
 };

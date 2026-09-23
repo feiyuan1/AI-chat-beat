@@ -77,7 +77,6 @@ declare global {
 export const reportError = (err: unknown) => {
   const errorLog = CreateMonitorLog(`${err}`, MonitorLogType.uncaught_error);
   const oldErrorLogs = getLocalStorage(LocalStoragekeys.errorLogs) || [];
-  console.log("oldErrorLogs", oldErrorLogs);
   setLocalStorage(LocalStoragekeys.errorLogs, oldErrorLogs.concat(errorLog));
   consoleError("injectErrorBoundary", err);
 };

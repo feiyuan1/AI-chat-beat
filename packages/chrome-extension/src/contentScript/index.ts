@@ -1,18 +1,21 @@
-import { handleAIChatRequestMessage, reportLocalStroageErrorLogs } from '@ai-chat-beat/common'
+import { handleAIChatRequestMessage, reportStroageErrorLogs } from '@ai-chat-beat/common'
+import { storeFailedLogs } from '../adapters/utils'
 import { CHROME_MESSAGE_TYPE, StoreMessage } from '../types'
 import {
   globalErrorBoundary,
   handleStoreChatMessage,
+  initLocalStorage,
   injectScript,
   reStoreMessages,
   syncBundleInfo,
 } from './util'
 
 const innerScript = () => {
+  initLocalStorage()
   injectScript()
   syncBundleInfo()
   reStoreMessages()
-  reportLocalStroageErrorLogs()
+  reportStroageErrorLogs(storeFailedLogs)
 
   // 监听来自 injected 的消息，转发给 background
   window.addEventListener('message', (event) => {

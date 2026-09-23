@@ -1,3 +1,4 @@
+import { initStorage, Storage } from '@ai-chat-beat/common'
 import { CreateMonitorLog, MonitorLogType, storeFailedLogs } from '../adapters/utils'
 import { CHROME_MESSAGE_TYPE, StoreMessage } from '../types'
 import { LocalStoragekeys } from '../types/localStorage'
@@ -72,4 +73,35 @@ export const reStoreMessages = () => {
       removeLocalStorageKey(LocalStoragekeys.unStoredMessageList)
     },
   )
+}
+
+const isLocalStorageKeys = (key: string): key is LocalStoragekeys => key in LocalStoragekeys
+
+const createLocalStorage = (): Storage => {
+  return {
+    get: async (key: string) => {
+      if (!isLocalStorageKeys(key)) {
+        consoleError('Invalid LocalStorage key')
+        return
+      }
+      return getLocalStorage(key)
+    },
+    set: async (key: string, value: any) => {
+      if (!isLocalStorageKeys(key)) {
+        consoleError('Invalid LocalStorage key')
+        return
+      }
+      setLocalStorage(key, value)
+    },
+    delete: async (key: string) => {
+      if (!isLocalStorageKeys(key)) {
+        consoleError('Invalid LocalStorage key')
+        return
+      }
+      removeLocalStorageKey(key)
+    },
+  }
+}
+export const initLocalStorage = () => {
+  initStorage(createLocalStorage())
 }

@@ -15,6 +15,6 @@ export enum WINDOW_MESSAGE_TYPE {
 }
 
 export interface Message {
-  type: WINDOW_MESSAGE_TYPE;
+  type: string;
   payload: any;
 }

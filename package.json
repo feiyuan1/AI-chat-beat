@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "@types/react": "~19.2.2"
+  }
 }

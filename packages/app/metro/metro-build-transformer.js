@@ -2,7 +2,7 @@ const upstreamTransformer = require("metro-babel-transformer");
 const esbuild = require("esbuild");
 
 module.exports.transform = async function ({ src, filename, options }) {
-  console.log("transform start");
+  console.log("transform start", filename);
   if (!filename.endsWith(".esbuild.ts")) {
     return upstreamTransformer.transform({ src, filename, options });
   }
@@ -18,10 +18,10 @@ module.exports.transform = async function ({ src, filename, options }) {
   });
 
   console.log("esbuild end");
-  const code = result.outputFiles[0].text;
+  const code = result.outputFiles[0].text + "\n//# sourceURL=injected.js";
 
   return upstreamTransformer.transform({
-    src: `export default ${JSON.stringify(code)};\n//# sourceURL=injected.js`,
+    src: `export default ${JSON.stringify(code)};`,
     filename: filename + ".js",
     options,
   });

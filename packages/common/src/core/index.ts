@@ -24,13 +24,13 @@ export const reportStroageErrorLogs = async (
 };
 
 // TODO 这里 AdaptErrorBoundaryParams T 被指定为 any，导致类型丢失
-export const handleAIChatRequestMessage = (
+export const handleAIChatRequestMessage = async (
   message: Message,
   params: Pick<AdaptErrorBoundaryParams<any>, "resolve" | "reject">,
 ) => {
   if (message?.type === WINDOW_MESSAGE_TYPE.AI_CHAT_REQUEST) {
     const { platform } = message.payload;
-    const adapter = getPlatformChatAdapter(platform);
+    const adapter = await getPlatformChatAdapter(platform);
 
     AdapterErrorBoundary({
       data: message.payload,

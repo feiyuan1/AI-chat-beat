@@ -21,14 +21,14 @@ const AIPage = () => {
     });
   }, []);
 
-  const onMessage = (event: { nativeEvent: { data: string } }) => {
+  const onMessage = async (event: { nativeEvent: { data: string } }) => {
     try {
       const message = JSON.parse(event.nativeEvent.data) as unknown as Message;
       if (message.type === MessageType.INJECTED_ERROR_LOGS) {
         console.log("RN errorlogs from injected", message.payload);
         return;
       }
-      handleAIChatRequestMessage(message, {
+      await handleAIChatRequestMessage(message, {
         resolve: (result) => {
           console.log("resolve", result);
         },

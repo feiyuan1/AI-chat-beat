@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "common logic for AI-chat-beat chrome extension and RN projects",
   "main": "./src/index.ts",
+  "sideEffects": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

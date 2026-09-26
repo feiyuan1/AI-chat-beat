@@ -81,22 +81,22 @@ const createLocalStorage = (): Storage => {
   return {
     get: async (key: string) => {
       if (!isLocalStorageKeys(key)) {
-        consoleError('Invalid LocalStorage key')
-        return
+        consoleError('Invalid LocalStorage key from get action')
+        throw new Error('Invalid LocalStorage key from get action')
       }
       return getLocalStorage(key)
     },
     set: async (key: string, value: any) => {
       if (!isLocalStorageKeys(key)) {
         consoleError('Invalid LocalStorage key')
-        return
+        throw new Error('Invalid LocalStorage key from set action')
       }
       setLocalStorage(key, value)
     },
     delete: async (key: string) => {
       if (!isLocalStorageKeys(key)) {
         consoleError('Invalid LocalStorage key')
-        return
+        throw new Error('Invalid LocalStorage key from delete action')
       }
       removeLocalStorageKey(key)
     },

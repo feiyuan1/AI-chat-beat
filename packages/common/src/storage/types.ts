@@ -4,3 +4,13 @@ export interface Storage {
   get: (key: string) => Promise<any>;
   delete: (key: string) => Promise<void>;
 }
+
+export enum TargetEnum {
+  /** adapt */
+  errorLogs = "errorLogs",
+  failedAdaptChat = "failedAdaptChat",
+  /** report */
+  reportFailedLogs = "reportFailedLogs",
+  reportFailedMetrics = "reportFailedMetrics",
+  labelModelConfig = "labelModelConfig",
+}

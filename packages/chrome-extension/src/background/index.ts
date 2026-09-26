@@ -14,12 +14,17 @@ import { CHROME_MESSAGE_TYPE, LabelDimension, StoreMessage } from '../types'
 import { loadLabelModelConfig } from '../utils/config-storage'
 import { log } from '../utils/debugger'
 import { startWsClient } from './dev-client'
-import { handleBatchStore } from './util'
+import { handleBatchStore, initChromeStroage } from './util'
 
 const timeStamp = performance.now()
 if (import.meta.env.MODE === 'development') {
   startWsClient()
 }
+
+initChromeStroage()
+/**
+ * common pkg
+ */
 reportFailedLogs()
 reportFailedMetrics()
 

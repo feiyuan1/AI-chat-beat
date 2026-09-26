@@ -43,3 +43,5 @@ export const deleteStorageItem = async (key: string) => {
   }
   return await storage.delete(key);
 };
+
+export * from "./types";

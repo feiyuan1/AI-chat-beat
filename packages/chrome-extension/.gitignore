@@ -12,6 +12,7 @@
 **/**.crx
 /build-dev-server
 /monitor
+stats.html
 
 # misc
 .DS_Store

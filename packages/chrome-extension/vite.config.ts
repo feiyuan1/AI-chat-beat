@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
 import { crx } from '@crxjs/vite-plugin'
+import { visualizer } from 'rollup-plugin-visualizer'
+import { defineConfig } from 'vite'
 import manifest from './src/manifest'
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   return {
@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
       },
     },
 
-    plugins: [crx({ manifest })],
+    plugins: [crx({ manifest }), visualizer()],
     legacy: {
       skipWebSocketTokenCheck: true,
     },

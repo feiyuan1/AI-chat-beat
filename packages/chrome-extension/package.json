@@ -45,6 +45,7 @@
     "playwright": "^1.62.1",
     "prettier": "^3.0.3",
     "rollup": "^4.60.3",
+    "rollup-plugin-visualizer": "^7.1.1",
     "typescript": "^5.2.2",
     "vite": "^5.4.10",
     "ws": "^8.20.0"

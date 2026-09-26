@@ -3,24 +3,24 @@ import {
   AdapterErrorBoundary,
   AdaptErrorBoundaryParams,
 } from "../adapter/utils";
-import { LocalStoragekeys } from "../localStorage/types";
 import { Log } from "../monitor/types";
 import {
   appendStorageItem,
   deleteStorageItem,
   getStorageItem,
+  TargetEnum,
 } from "../storage";
 import { Message, WINDOW_MESSAGE_TYPE } from "../types";
 
 export const reportStroageErrorLogs = async (
   reportErrorLogs: (logs: Log[]) => void,
 ) => {
-  const errorLogs = (await getStorageItem(LocalStoragekeys.errorLogs)) || [];
+  const errorLogs = (await getStorageItem(TargetEnum.errorLogs)) || [];
   if (!errorLogs.length) {
     return;
   }
   reportErrorLogs(errorLogs);
-  await deleteStorageItem(LocalStoragekeys.errorLogs);
+  await deleteStorageItem(TargetEnum.errorLogs);
 };
 
 // TODO 这里 AdaptErrorBoundaryParams T 被指定为 any，导致类型丢失
@@ -36,9 +36,7 @@ export const handleAIChatRequestMessage = async (
       data: message.payload,
       adapter,
       async reject() {
-        await appendStorageItem(LocalStoragekeys.failedAdaptChat, [
-          message.payload,
-        ]);
+        await appendStorageItem(TargetEnum.failedAdaptChat, [message.payload]);
       },
       ...params,
     });

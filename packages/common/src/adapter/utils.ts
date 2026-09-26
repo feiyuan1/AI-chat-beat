@@ -1,6 +1,5 @@
-import { LocalStoragekeys } from "../localStorage/types";
 import { MonitorLog, MonitorLogType } from "../monitor/types";
-import { appendStorageItem } from "../storage";
+import { appendStorageItem, TargetEnum } from "../storage";
 import { Platform } from "../types";
 import { consoleError } from "../utils/debugger";
 import { AdapterResultStatus, AdaptResult } from "./types";
@@ -51,7 +50,7 @@ export const AdapterErrorBoundary = async <T>({
       msg: error.message || error,
       platform: error.platform,
     });
-    await appendStorageItem(LocalStoragekeys.errorLogs, [log]);
+    await appendStorageItem(TargetEnum.errorLogs, [log]);
     consoleError(error);
     await reject?.(error);
   }

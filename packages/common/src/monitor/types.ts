@@ -14,3 +14,9 @@ export interface Log {
 export interface MonitorLog extends Log {
   type: MonitorLogType;
 }
+
+export interface Sample {
+  metric: any;
+  values: number[];
+  timestamps: number[];
+}

@@ -63,42 +63,6 @@ export const storeFailedMetrics = (metrics: Sample[]) => {
   })
 }
 
-export const reportFailedLogs = () => {
-  chrome.storage.local
-    .get([TargetEnum.reportFailedLogs])
-    .then((result) => {
-      const logs = result[TargetEnum.reportFailedLogs] || []
-      if (!logs.length) {
-        return
-      }
-      return reportLogs(logs, true)
-    })
-    .then((reportSuccess) => {
-      if (!reportSuccess) {
-        return
-      }
-      chrome.storage.local.remove(TargetEnum.reportFailedLogs)
-    })
-}
-
-export const reportFailedMetrics = () => {
-  chrome.storage.local
-    .get([TargetEnum.reportFailedMetrics])
-    .then((result) => {
-      const metrics = result[TargetEnum.reportFailedMetrics] || []
-      if (!metrics.length) {
-        return
-      }
-      return reportMetrics(metrics, true)
-    })
-    .then((reportSuccess) => {
-      if (!reportSuccess) {
-        return
-      }
-      chrome.storage.local.remove(TargetEnum.reportFailedMetrics)
-    })
-}
-
 export interface Sample {
   metric: any
   values: number[]

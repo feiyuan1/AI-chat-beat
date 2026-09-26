@@ -1,6 +1,8 @@
 import {
   handleAIChatRequestMessage,
   Message,
+  reportFailedLogs,
+  reportFailedMetrics,
   reportStroageErrorLogs,
 } from "@ai-chat-beat/common";
 import { useEffect } from "react";
@@ -15,10 +17,17 @@ const AIPage = () => {
     console.log("typeof inejcted:", typeof injected);
   }, []);
 
+  // report errorlogs from injected and adapt
   useEffect(() => {
     reportStroageErrorLogs((logs) => {
       console.log("RN errorlogs", logs);
     });
+  }, []);
+
+  // report failedlogs and failedmetrics from report
+  useEffect(() => {
+    reportFailedLogs();
+    reportFailedMetrics();
   }, []);
 
   const onMessage = async (event: { nativeEvent: { data: string } }) => {

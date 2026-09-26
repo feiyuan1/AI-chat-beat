@@ -1,12 +1,7 @@
+import { reportFailedLogs, reportFailedMetrics } from '@ai-chat-beat/common'
 import { ReportChatsLogs } from '../adapters/logAdatper'
 import { ReportChats } from '../adapters/MetricAdapter'
-import {
-  CreateMonitorLog,
-  MonitorLogType,
-  reportFailedLogs,
-  reportFailedMetrics,
-  storeFailedLogs,
-} from '../adapters/utils'
+import { CreateMonitorLog, MonitorLogType, storeFailedLogs } from '../adapters/utils'
 import { NOTIFICATION_KEY } from '../constants'
 import { RESOTRE_CHAT_CHROME_LOCAL } from '../constants/dev_env'
 import { classifyPromptWithFallback } from '../labels/semanticClassifier'
@@ -22,9 +17,6 @@ if (import.meta.env.MODE === 'development') {
 }
 
 initChromeStroage()
-/**
- * common pkg
- */
 reportFailedLogs()
 reportFailedMetrics()
 

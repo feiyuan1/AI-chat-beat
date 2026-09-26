@@ -16,13 +16,12 @@
     "@types/react": "~19.2.2",
     "babel-preset-expo": "^57.0.12",
     "esbuild": "^0.28.2",
-    "concurrently": "^9.2.1",
     "chokidar": "^5.0.0",
     "typescript": "~6.0.3"
   },
   "scripts": {
-    "start": "chcp 65001 && concurrently \"npm run watch:common\" \"expo start --dev-client\"",
-    "rc": "chcp 65001 && concurrently \"npm run watch:common\" \"npx expo start --dev-client --reset-cache\"",
+    "start": "expo start --dev-client",
+    "rc": "npx expo start --dev-client --reset-cache",
     "watch:common": "node ./scripts/watch-common.js",
     "android": "expo run:android",
     "ios": "expo run:ios",

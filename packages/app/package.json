@@ -5,18 +5,23 @@
   "dependencies": {
     "@ai-chat-beat/common": "1.0.0",
     "@react-native-async-storage/async-storage": "^3.1.1",
+    "@react-navigation/elements": "^2.9.43",
+    "@react-navigation/native": "^7.4.1",
+    "@react-navigation/native-stack": "^7.19.2",
     "expo": "~57.0.24",
     "expo-dev-client": "~57.0.19",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
     "react-native": "0.86.3",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
     "react-native-webview": "^14.0.1"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
     "babel-preset-expo": "^57.0.12",
-    "esbuild": "^0.28.2",
     "chokidar": "^5.0.0",
+    "esbuild": "^0.28.2",
     "typescript": "~6.0.3"
   },
   "scripts": {

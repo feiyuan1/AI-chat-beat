@@ -1,17 +1,17 @@
 import {
   handleAIChatRequestMessage,
   Message,
-  ReportChatsLogs,
-  ReportChatsMetrics,
   reportFailedLogs,
   reportFailedMetrics,
   reportStroageErrorLogs,
 } from "@ai-chat-beat/common";
+import { Button } from "@react-navigation/elements";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 import originalInjected from "../injected.esbuild";
 import { MessageType } from "./types";
+import { saveDataOnDevice } from "./utils/chatDataStorage";
 
 const injected = originalInjected as unknown as string;
 const AIPage = () => {
@@ -41,9 +41,9 @@ const AIPage = () => {
       }
       await handleAIChatRequestMessage(message, {
         resolve: (result) => {
-          console.log("resolve", result);
-          ReportChatsMetrics({ chats: [result] });
-          ReportChatsLogs([result]);
+          saveDataOnDevice([result]);
+          // ReportChatsMetrics({ chats: [result] });
+          // ReportChatsLogs([result]);
         },
       });
     } catch (err) {
@@ -61,21 +61,21 @@ const AIPage = () => {
         injectedJavaScriptBeforeContentLoaded={injected}
         onMessage={onMessage}
       />
+      <Button screen="Settings" params={{}} style={styles.button}>
+        settings
+      </Button>
     </View>
   );
-};
-
-AIPage.options = {
-  topBar: {
-    title: {
-      text: "历史记录",
-    },
-  },
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  button: {
+    position: "absolute",
+    top: 50,
+    right: 0,
   },
 });
 

@@ -1,4 +1,4 @@
-import { reportMetrics } from "../monitor";
+import { reportLogs, reportMetrics } from "../monitor";
 import { deleteStorageItem, getStorageItem, TargetEnum } from "../storage";
 
 export const reportFailedLogs = async () => {
@@ -6,11 +6,11 @@ export const reportFailedLogs = async () => {
   if (!logs.length) {
     return;
   }
-  // const reportSuccess = await reportLogs(logs, true);
-  // if (!reportSuccess) {
-  //   return;
-  // }
-  // deleteStorageItem(TargetEnum.reportFailedLogs);
+  const reportSuccess = await reportLogs(logs, true);
+  if (!reportSuccess) {
+    return;
+  }
+  deleteStorageItem(TargetEnum.reportFailedLogs);
 };
 
 export const reportFailedMetrics = async () => {

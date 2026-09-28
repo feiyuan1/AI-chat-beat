@@ -3,7 +3,7 @@ export * from "./core";
 export { default as injectedScript } from "./injected/index";
 export * from "./localStorage/types";
 export * from "./localStorage/utils";
-export * from "./monitor/metricAdatper";
+export * from "./monitor";
 export * from "./report";
 export { initStorage } from "./storage";
 export { type Storage } from "./storage/types";

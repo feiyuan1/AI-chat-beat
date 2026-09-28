@@ -81,3 +81,37 @@ export const storeFailedLogs = (logs: Log[]) => {
 const storeFailedMetrics = (metrics: Sample[]) => {
   return appendStorageItem(TargetEnum.reportFailedMetrics, metrics);
 };
+
+export const reportLogs = async (logs: Log[], isRestore = false) => {
+  const body = logs.map((log) => JSON.stringify(log)).join("\n");
+  log("report log body", body);
+  return fetch(
+    "http://127.0.0.1:9428/insert/jsonline?_stream_fields=session_name",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body, // JSON Lines 格式
+    },
+  )
+    .then((response) => {
+      return safeResponseToJson(response);
+    })
+    .then((response) => {
+      if (response.ok) {
+        log(`push ${logs.length} logs success`);
+        return response.ok;
+      }
+      throw new Error(JSON.stringify(response));
+    })
+    .catch((err) => {
+      consoleError("上报日志失败:", `${err}`);
+      if (isRestore) {
+        return;
+      }
+      const errorLog = CreateMonitorLog(
+        `${err}`,
+        MonitorLogType.report_log_error,
+      );
+      storeFailedLogs(logs.concat(errorLog));
+    });
+};

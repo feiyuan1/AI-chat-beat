@@ -1,6 +1,7 @@
 import {
   handleAIChatRequestMessage,
   Message,
+  ReportChatsLogs,
   ReportChatsMetrics,
   reportFailedLogs,
   reportFailedMetrics,
@@ -42,6 +43,7 @@ const AIPage = () => {
         resolve: (result) => {
           console.log("resolve", result);
           ReportChatsMetrics({ chats: [result] });
+          ReportChatsLogs([result]);
         },
       });
     } catch (err) {

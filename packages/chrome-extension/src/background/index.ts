@@ -1,6 +1,6 @@
 import { reportFailedLogs, reportFailedMetrics } from '@ai-chat-beat/common'
+import { ReportChatsMetrics } from '@ai-chat-beat/common/src/monitor'
 import { ReportChatsLogs } from '../adapters/logAdatper'
-import { ReportChats } from '../adapters/MetricAdapter'
 import { CreateMonitorLog, MonitorLogType, storeFailedLogs } from '../adapters/utils'
 import { NOTIFICATION_KEY } from '../constants'
 import { RESOTRE_CHAT_CHROME_LOCAL } from '../constants/dev_env'
@@ -32,7 +32,7 @@ chrome.runtime.onMessage.addListener((message: StoreMessage) => {
   /**
    * 需要考虑迁移
    */
-  ReportChats({ chats: message.payload, aggregate: message.aggregate })
+  ReportChatsMetrics({ chats: message.payload, aggregate: message.aggregate })
   loadLabelModelConfig()
     .then((config) => {
       if (!config) {

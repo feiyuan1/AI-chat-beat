@@ -1,5 +1,5 @@
-import { Log, Sample } from "../monitor/types";
-import { appendStorageItem, getStorageItem, TargetEnum } from "../storage";
+import { reportMetrics } from "../monitor";
+import { deleteStorageItem, getStorageItem, TargetEnum } from "../storage";
 
 export const reportFailedLogs = async () => {
   const logs = (await getStorageItem(TargetEnum.reportFailedLogs)) || [];
@@ -18,36 +18,9 @@ export const reportFailedMetrics = async () => {
   if (!metrics.length) {
     return;
   }
-  // const reportSuccess = await reportMetrics(metrics, true);
-  // if (!reportSuccess) {
-  //   return;
-  // }
-  // deleteStorageItem(TargetEnum.reportFailedMetrics);
-};
-
-export const storeFailedLogs = (logs: Log[]) => {
-  return appendStorageItem(TargetEnum.reportFailedLogs, logs);
-};
-
-export const testStoreFailedLogs = () => {
-  return storeFailedLogs([
-    {
-      _msg: "test failed logs",
-      _time: Date.now(),
-    },
-  ]);
-};
-
-export const storeFailedMetrics = (metrics: Sample[]) => {
-  return appendStorageItem(TargetEnum.reportFailedMetrics, metrics);
-};
-
-export const testStoreFailedMetrics = () => {
-  return storeFailedMetrics([
-    {
-      metric: "test failed metrics",
-      values: [1],
-      timestamps: [Date.now()],
-    },
-  ]);
+  const reportSuccess = await reportMetrics(metrics, true);
+  if (!reportSuccess) {
+    return;
+  }
+  deleteStorageItem(TargetEnum.reportFailedMetrics);
 };

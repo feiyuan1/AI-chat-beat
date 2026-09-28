@@ -49,7 +49,7 @@ export default defineManifest({
   ],
   web_accessible_resources: [
     {
-      resources: ['injected.js'],
+      resources: ['injected.js', 'assets/chunk-*.js'],
       matches: [
         'https://chat.deepseek.com/*',
         'https://yuanbao.tencent.com/*',

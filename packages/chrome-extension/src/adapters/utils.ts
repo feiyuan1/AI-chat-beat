@@ -54,50 +54,6 @@ export const storeFailedLogs = (logs: Log[]) => {
   })
 }
 
-export const storeFailedMetrics = (metrics: Sample[]) => {
-  chrome.storage.local.get([TargetEnum.reportFailedMetrics]).then((result) => {
-    const oldList = result[TargetEnum.reportFailedMetrics] || []
-    chrome.storage.local.set({
-      [TargetEnum.reportFailedMetrics]: oldList.concat(metrics),
-    })
-  })
-}
-
-export interface Sample {
-  metric: any
-  values: number[]
-  timestamps: number[]
-}
-
-export const reportMetrics = async (metrics: Sample[], isRestore = false) => {
-  const body = metrics.map((metric) => JSON.stringify(metric)).join('\n')
-  log('report metrics body', body)
-  return fetch('http://127.0.0.1:8428/api/v1/import', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body, // JSON Lines 格式
-  })
-    .then((response) => {
-      return safeResponseToJson(response)
-    })
-    .then((response) => {
-      if (response.ok) {
-        log(`push ${metrics.length} metric success`)
-        return response.ok
-      }
-      throw new Error(JSON.stringify(response))
-    })
-    .catch((err) => {
-      consoleError('上报指标失败:', `${err}`)
-      if (isRestore) {
-        return
-      }
-      storeFailedMetrics(metrics)
-      const errorLog = CreateMonitorLog(`${err}`, MonitorLogType.report_metric_error)
-      storeFailedLogs([errorLog])
-    })
-}
-
 export interface Log {
   _msg: string
   _time: number

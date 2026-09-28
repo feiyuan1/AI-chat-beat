@@ -1,5 +1,4 @@
-import { ReportChatsLogs } from '../adapters/logAdatper'
-import { ReportChats } from '../adapters/MetricAdapter'
+import { CHROME_MESSAGE_TYPE } from '../types'
 import { log } from '../utils/debugger'
 import { initConfigForm } from './model-config'
 
@@ -47,12 +46,11 @@ const reportChatData = function (event: Event) {
     }
     alert('读取成功')
     const parsedData = JSON.parse(fullData)
-    /**
-     * TODO 其实这里的代码结构有点问题，在 adapter/utils 导出的内容被 popup 引入了
-     * 按理来说，要么把这些function挪到 src/utils 要么纠正引入的function
-     */
-    ReportChats({ chats: parsedData, aggregate: false })
-    ReportChatsLogs(parsedData)
+    chrome.runtime.sendMessage({
+      type: CHROME_MESSAGE_TYPE.BATCH_CHAT_REQUESTS,
+      payload: parsedData,
+      aggregate: false,
+    })
   }
 
   reader.readAsText(file)

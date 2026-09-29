@@ -2,13 +2,13 @@ import {
   consoleError,
   log,
   parseModelConfig,
-  ReportChatsLogs,
   ReportChatsMetrics,
   saveLabelModelConfig,
 } from "@ai-chat-beat/common";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { Alert, Button, StyleSheet, View } from "react-native";
+import { reportChats } from "./utils";
 import {
   deleteDataFromDevice,
   readDataFromDevice,
@@ -26,7 +26,7 @@ const SettingsPage = () => {
             return;
           }
           ReportChatsMetrics({ chats: chatData });
-          ReportChatsLogs(chatData);
+          reportChats(chatData);
         }}
       />
 

@@ -1,4 +1,10 @@
-import { initStorage, Storage } from "@ai-chat-beat/common";
+import {
+  initStorage,
+  reportChatsWithLabel,
+  Storage,
+} from "@ai-chat-beat/common";
+import { StorePayload } from "@ai-chat-beat/common/src/adapter/types";
+import { Alert } from "react-native";
 import { getData, removeData, saveData } from "../storage";
 
 export const createLocalStorage = (): Storage => {
@@ -17,4 +23,10 @@ export const createLocalStorage = (): Storage => {
 
 export const initLocalStorage = () => {
   initStorage(createLocalStorage());
+};
+
+export const reportChats = (chats: StorePayload[]) => {
+  reportChatsWithLabel(chats, () => {
+    Alert.alert("missing model config");
+  });
 };

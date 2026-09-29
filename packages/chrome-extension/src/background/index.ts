@@ -1,17 +1,15 @@
 import {
   LabelModelConfig,
   loadLabelModelConfig,
+  reportChatsWithLabel,
   reportFailedLogs,
   reportFailedMetrics,
   saveLabelModelConfig,
 } from '@ai-chat-beat/common'
 import { ReportChatsMetrics } from '@ai-chat-beat/common/src/monitor'
-import { ReportChatsLogs } from '../adapters/logAdatper'
-import { CreateMonitorLog, MonitorLogType, storeFailedLogs } from '../adapters/utils'
 import { NOTIFICATION_KEY } from '../constants'
 import { RESOTRE_CHAT_CHROME_LOCAL } from '../constants/dev_env'
-import { classifyPromptWithFallback } from '../labels/semanticClassifier'
-import { CHROME_MESSAGE_TYPE, LabelDimension, StoreMessage } from '../types'
+import { CHROME_MESSAGE_TYPE, StoreMessage } from '../types'
 import { log } from '../utils/debugger'
 import { startWsClient } from './dev-client'
 import { handleBatchStore, initChromeStroage } from './util'
@@ -35,58 +33,15 @@ chrome.runtime.onMessage.addListener((message: StoreMessage) => {
   }
 
   ReportChatsMetrics({ chats: message.payload, aggregate: message.aggregate })
-  loadLabelModelConfig()
-    .then((config) => {
-      if (!config) {
-        throw new Error(NOTIFICATION_KEY)
-      }
-
-      return Promise.all(
-        message.payload.map(async (chat) => {
-          try {
-            const { labels, usage } = await classifyPromptWithFallback(chat.prompt, config)
-
-            return {
-              ...chat,
-              labels: (Object.keys(labels.labels) as LabelDimension[]).reduce(
-                (result, dimension) => {
-                  return { ...result, [dimension]: labels.labels[dimension].value }
-                },
-                {},
-              ),
-              usage,
-            }
-          } catch (error: unknown) {
-            const errorMessage = error instanceof Error ? error.message : String(error)
-            const errorLog = CreateMonitorLog(
-              `classifyPromptWithFallback error: ${errorMessage}`,
-              MonitorLogType.ai_analyze_error,
-            )
-            storeFailedLogs([errorLog])
-            log('classifyPromptWithFallback error', errorMessage)
-            return chat
-          }
-        }),
-      )
+  reportChatsWithLabel(message.payload, () => {
+    chrome.notifications.clear(NOTIFICATION_KEY)
+    chrome.notifications.create(NOTIFICATION_KEY, {
+      type: 'basic',
+      iconUrl: 'public/icons/icon.png',
+      title: 'AI Chat Beat',
+      message: '模型配置缺失，请打开 popup 进行配置,本轮 prompt 未打入标签',
     })
-    .then((result) => {
-      if (!Array.isArray(result)) {
-        return
-      }
-      ReportChatsLogs(result)
-    })
-    .catch((err) => {
-      if (err?.message === NOTIFICATION_KEY) {
-        chrome.notifications.clear(NOTIFICATION_KEY)
-        chrome.notifications.create(NOTIFICATION_KEY, {
-          type: 'basic',
-          iconUrl: 'public/icons/icon.png',
-          title: 'AI Chat Beat',
-          message: '模型配置缺失，请打开 popup 进行配置,本轮 prompt 未打入标签',
-        })
-        ReportChatsLogs(message.payload)
-      }
-    })
+  })
 })
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {

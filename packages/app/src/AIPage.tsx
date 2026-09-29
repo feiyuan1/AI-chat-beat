@@ -15,10 +15,6 @@ import { saveDataOnDevice } from "./utils/chatDataStorage";
 
 const injected = originalInjected as unknown as string;
 const AIPage = () => {
-  useEffect(() => {
-    console.log("typeof inejcted:", typeof injected);
-  }, []);
-
   // report errorlogs from injected and adapt
   useEffect(() => {
     reportStroageErrorLogs((logs) => {
@@ -42,8 +38,6 @@ const AIPage = () => {
       await handleAIChatRequestMessage(message, {
         resolve: (result) => {
           saveDataOnDevice([result]);
-          // ReportChatsMetrics({ chats: [result] });
-          // ReportChatsLogs([result]);
         },
       });
     } catch (err) {

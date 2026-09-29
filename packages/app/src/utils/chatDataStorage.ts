@@ -18,7 +18,6 @@ export const saveDataOnDevice = (chats: Chat[]) => {
   const data = chatsToJsonl(chats);
   const file = new File(Paths.document, CHAT_FILE_URL);
   file.write(data);
-  Alert.alert("save success");
   log("saveDataOnDevice", file.textSync());
 };
 

@@ -8,4 +8,5 @@ export const postMessage = (message: Message) => {
   window.postMessage(message, "*");
 };
 
+export * from "../labels";
 export * from "./debugger";

@@ -1,4 +1,5 @@
 import { StorePayload } from "../adapter/types";
+import { LabelClassificationResult, ModelPromptLabels } from "../labels/types";
 import { Platform } from "../types";
 import { consoleError } from "../utils";
 import { Log, MonitorLogType } from "./types";
@@ -11,33 +12,34 @@ import {
 
 interface ChatRequestLog extends Log {
   platform: Platform;
-  // labels?: ModelPromptLabels
-  // prompt_tokens?: LabelClassificationResult['usage']['prompt_tokens']
-  // completion_tokens?: LabelClassificationResult['usage']['completion_tokens']
-  // total_tokens?: LabelClassificationResult['usage']['total_tokens']
-  // prompt_cache_hit_tokens?: LabelClassificationResult['usage']['prompt_tokens_details']['cached_tokens']
-  // prompt_cache_miss_tokens?: number
+  labels?: ModelPromptLabels;
+  prompt_tokens?: LabelClassificationResult["usage"]["prompt_tokens"];
+  completion_tokens?: LabelClassificationResult["usage"]["completion_tokens"];
+  total_tokens?: LabelClassificationResult["usage"]["total_tokens"];
+  prompt_cache_hit_tokens?: LabelClassificationResult["usage"]["prompt_tokens_details"]["cached_tokens"];
+  prompt_cache_miss_tokens?: number;
 }
 
 type ChatLogPayload = StorePayload & {
-  // labels?: ModelPromptLabels
-  // usage?: LabelClassificationResult['usage']
+  labels?: ModelPromptLabels;
+  usage?: LabelClassificationResult["usage"];
 };
 
 const chatToLog = (chat: ChatLogPayload): ChatRequestLog => {
-  // const usage = chat.usage
+  const usage = chat.usage;
   return {
     _msg: chat.prompt,
     _time: chat.timestamp,
     platform: chat.platform,
-    // ...(chat.labels && { labels: chat.labels }),
-    // ...(usage && {
-    //   prompt_tokens: usage.prompt_tokens,
-    //   completion_tokens: usage.completion_tokens,
-    //   total_tokens: usage.total_tokens,
-    //   prompt_cache_hit_tokens: usage.prompt_tokens_details.cached_tokens,
-    //   prompt_cache_miss_tokens: usage.prompt_tokens - usage.prompt_tokens_details.cached_tokens,
-    // }),
+    ...(chat.labels && { labels: chat.labels }),
+    ...(usage && {
+      prompt_tokens: usage.prompt_tokens,
+      completion_tokens: usage.completion_tokens,
+      total_tokens: usage.total_tokens,
+      prompt_cache_hit_tokens: usage.prompt_tokens_details.cached_tokens,
+      prompt_cache_miss_tokens:
+        usage.prompt_tokens - usage.prompt_tokens_details.cached_tokens,
+    }),
   };
 };
 

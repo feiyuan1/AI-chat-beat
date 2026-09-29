@@ -1,5 +1,6 @@
+import { CHROME_MESSAGE_TYPE } from '../types'
 import { LabelModelConfig } from '../types/modelConfig'
-import { loadLabelModelConfig, saveLabelModelConfig } from '../utils/config-storage'
+import { loadLabelModelConfig } from '../utils/config-storage'
 
 const baseUrlInput = document.getElementById('config-base-url') as HTMLInputElement | null
 const modelInput = document.getElementById('config-model') as HTMLInputElement | null
@@ -128,8 +129,15 @@ export async function initConfigForm() {
     }
 
     try {
-      await saveLabelModelConfig(config)
-      alert('配置已保存')
+      chrome.runtime
+        .sendMessage({ type: CHROME_MESSAGE_TYPE.SAVE_MODEL_CONFIG })
+        .then(() => {
+          alert('配置已保存')
+        })
+        .catch((err) => {
+          alert('something went wrong when save config')
+          console.error('saved model config error', err)
+        })
     } catch {
       alert('保存配置失败')
     }

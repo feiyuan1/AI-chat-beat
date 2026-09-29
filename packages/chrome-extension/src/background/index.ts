@@ -6,7 +6,8 @@ import { NOTIFICATION_KEY } from '../constants'
 import { RESOTRE_CHAT_CHROME_LOCAL } from '../constants/dev_env'
 import { classifyPromptWithFallback } from '../labels/semanticClassifier'
 import { CHROME_MESSAGE_TYPE, LabelDimension, StoreMessage } from '../types'
-import { loadLabelModelConfig } from '../utils/config-storage'
+import { LabelModelConfig } from '../types/modelConfig'
+import { loadLabelModelConfig, saveLabelModelConfig } from '../utils/config-storage'
 import { log } from '../utils/debugger'
 import { startWsClient } from './dev-client'
 import { handleBatchStore, initChromeStroage } from './util'
@@ -88,8 +89,21 @@ chrome.runtime.onMessage.addListener((message: StoreMessage) => {
 })
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (message.type === 'GET_BUNDLE_TIMESTAMP') {
+  if (message.type === CHROME_MESSAGE_TYPE.GET_BUNDLE_TIMESTAMP) {
     log('sw timestamp: ', timeStamp)
     sendResponse(timeStamp)
   }
 })
+
+chrome.runtime.onMessage.addListener(
+  async (
+    message: { type: CHROME_MESSAGE_TYPE; payload: LabelModelConfig },
+    _sender,
+    sendResponse,
+  ) => {
+    if (message.type === CHROME_MESSAGE_TYPE.SAVE_MODEL_CONFIG) {
+      await saveLabelModelConfig(message.payload)
+      sendResponse(true)
+    }
+  },
+)

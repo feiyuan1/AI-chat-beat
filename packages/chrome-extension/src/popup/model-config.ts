@@ -1,6 +1,5 @@
+import { LabelModelConfig, parseModelConfig, validationConfig } from '@ai-chat-beat/common'
 import { CHROME_MESSAGE_TYPE } from '../types'
-import { LabelModelConfig } from '../types/modelConfig'
-import { loadLabelModelConfig } from '../utils/config-storage'
 
 const baseUrlInput = document.getElementById('config-base-url') as HTMLInputElement | null
 const modelInput = document.getElementById('config-model') as HTMLInputElement | null
@@ -33,54 +32,16 @@ function readForm(): LabelModelConfig {
   }
 }
 
-function isConfigLike(value: unknown): value is Partial<LabelModelConfig> {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'baseUrl' in value &&
-    'model' in value &&
-    'apiKey' in value
-  )
-}
-
 async function importConfigFromFile(file: File) {
   const text = await file.text()
-  let parsed: unknown
-
-  try {
-    parsed = JSON.parse(text)
-  } catch {
-    alert('配置文件不是有效的 JSON')
-    return
-  }
-
-  if (!isConfigLike(parsed)) {
-    alert('配置文件缺少必填字段：baseUrl、model、apiKey')
-    return
-  }
-
-  const config: LabelModelConfig = {
-    baseUrl: String(parsed.baseUrl).trim(),
-    model: String(parsed.model).trim(),
-    timeoutMs: Number(parsed.timeoutMs) || 0,
-    apiKey: String(parsed.apiKey),
-  }
-
-  if (!config.baseUrl) {
-    alert('导入失败：Base URL 不能为空')
-    return
-  }
-  if (!config.model) {
-    alert('导入失败：Model 不能为空')
-    return
-  }
-  if (!config.apiKey) {
-    alert('导入失败：API Key 不能为空')
+  const result = parseModelConfig(text)
+  if (result.type === 'error') {
+    alert(result.message)
     return
   }
 
   try {
-    fillForm(config)
+    fillForm(result.config)
     alert('配置已导入')
   } catch {
     alert('配置导入失败')
@@ -93,10 +54,8 @@ export async function initConfigForm() {
   }
 
   try {
-    const config = await loadLabelModelConfig()
-    if (config) {
-      fillForm(config)
-    }
+    const config = await chrome.runtime.sendMessage({ type: CHROME_MESSAGE_TYPE.LOAD_MODEL_CONFIG })
+    fillForm(config)
   } catch {
     alert('读取配置失败')
   }
@@ -114,28 +73,23 @@ export async function initConfigForm() {
 
   saveButton.onclick = async () => {
     const config = readForm()
-
-    if (!config.baseUrl) {
-      alert('Base URL 不能为空')
-      return
-    }
-    if (!config.model) {
-      alert('Model 不能为空')
-      return
-    }
-    if (!config.apiKey) {
-      alert('API Key 不能为空')
+    const result = validationConfig(config)
+    if (result.type === 'error') {
+      alert(result.message)
       return
     }
 
     try {
       chrome.runtime
-        .sendMessage({ type: CHROME_MESSAGE_TYPE.SAVE_MODEL_CONFIG })
-        .then(() => {
+        .sendMessage({ type: CHROME_MESSAGE_TYPE.SAVE_MODEL_CONFIG, payload: config })
+        .then((result) => {
+          if (result?.type === 'error') {
+            throw result.error
+          }
           alert('配置已保存')
         })
         .catch((err) => {
-          alert('something went wrong when save config')
+          alert('something went wrong wh en save config')
           console.error('saved model config error', err)
         })
     } catch {

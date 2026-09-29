@@ -1,4 +1,11 @@
-import { log, ReportChatsLogs, ReportChatsMetrics } from "@ai-chat-beat/common";
+import {
+  consoleError,
+  log,
+  parseModelConfig,
+  ReportChatsLogs,
+  ReportChatsMetrics,
+  saveLabelModelConfig,
+} from "@ai-chat-beat/common";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { Alert, Button, StyleSheet, View } from "react-native";
@@ -22,20 +29,7 @@ const SettingsPage = () => {
           ReportChatsLogs(chatData);
         }}
       />
-      <Button
-        title="Upload model config"
-        onPress={async () => {
-          const files = await DocumentPicker.getDocumentAsync({
-            type: "application/json",
-            multiple: false,
-          });
-          if (files && files.assets) {
-            console.log("uploaded", files.assets[0].uri);
-            const file = new File(files.assets[0].uri);
-            console.log(JSON.parse(file.textSync()));
-          }
-        }}
-      />
+
       <Button
         title="clear chat data"
         onPress={() => {
@@ -53,6 +47,26 @@ const SettingsPage = () => {
           );
         }}
       />
+      <Button
+        title="Upload model config"
+        onPress={async () => {
+          const files = await DocumentPicker.getDocumentAsync({
+            type: "application/json",
+            multiple: false,
+          });
+          if (files && files.assets) {
+            const file = new File(files.assets[0].uri);
+            const result = parseModelConfig(file.textSync());
+            if (result.type === "error") {
+              Alert.alert("Error", "error structure of selected json file");
+              consoleError("parseModelConfig error", result.message);
+              return;
+            }
+            await saveLabelModelConfig(result.config);
+            Alert.alert("Success", "model config saved");
+          }
+        }}
+      />
     </View>
   );
 };
@@ -60,6 +74,8 @@ const SettingsPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
+    gap: 12,
   },
 });
 

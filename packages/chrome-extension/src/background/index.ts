@@ -1,4 +1,10 @@
-import { reportFailedLogs, reportFailedMetrics } from '@ai-chat-beat/common'
+import {
+  LabelModelConfig,
+  loadLabelModelConfig,
+  reportFailedLogs,
+  reportFailedMetrics,
+  saveLabelModelConfig,
+} from '@ai-chat-beat/common'
 import { ReportChatsMetrics } from '@ai-chat-beat/common/src/monitor'
 import { ReportChatsLogs } from '../adapters/logAdatper'
 import { CreateMonitorLog, MonitorLogType, storeFailedLogs } from '../adapters/utils'
@@ -6,8 +12,6 @@ import { NOTIFICATION_KEY } from '../constants'
 import { RESOTRE_CHAT_CHROME_LOCAL } from '../constants/dev_env'
 import { classifyPromptWithFallback } from '../labels/semanticClassifier'
 import { CHROME_MESSAGE_TYPE, LabelDimension, StoreMessage } from '../types'
-import { LabelModelConfig } from '../types/modelConfig'
-import { loadLabelModelConfig, saveLabelModelConfig } from '../utils/config-storage'
 import { log } from '../utils/debugger'
 import { startWsClient } from './dev-client'
 import { handleBatchStore, initChromeStroage } from './util'
@@ -30,9 +34,6 @@ chrome.runtime.onMessage.addListener((message: StoreMessage) => {
     handleBatchStore(message.payload)
   }
 
-  /**
-   * 需要考虑迁移
-   */
   ReportChatsMetrics({ chats: message.payload, aggregate: message.aggregate })
   loadLabelModelConfig()
     .then((config) => {
@@ -96,14 +97,27 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 })
 
 chrome.runtime.onMessage.addListener(
-  async (
-    message: { type: CHROME_MESSAGE_TYPE; payload: LabelModelConfig },
-    _sender,
-    sendResponse,
-  ) => {
+  (message: { type: CHROME_MESSAGE_TYPE; payload: LabelModelConfig }, _sender, sendResponse) => {
     if (message.type === CHROME_MESSAGE_TYPE.SAVE_MODEL_CONFIG) {
-      await saveLabelModelConfig(message.payload)
-      sendResponse(true)
+      saveLabelModelConfig(message.payload)
+        .then(() => {
+          sendResponse({ type: 'success' })
+        })
+        .catch((err) => {
+          sendResponse({ type: 'error', error: err })
+        })
+      return true
+    }
+  },
+)
+
+chrome.runtime.onMessage.addListener(
+  (message: { type: CHROME_MESSAGE_TYPE }, _sender, sendResponse) => {
+    if (message.type === CHROME_MESSAGE_TYPE.LOAD_MODEL_CONFIG) {
+      loadLabelModelConfig().then((config) => {
+        sendResponse(config)
+      })
+      return true
     }
   },
 )

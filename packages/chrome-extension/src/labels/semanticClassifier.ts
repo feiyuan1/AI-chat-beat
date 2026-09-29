@@ -1,5 +1,5 @@
+import { LabelModelConfig } from '@ai-chat-beat/common'
 import { LabelClassificationResult, LabelModelResponse } from '../types/labels'
-import { LabelModelConfig } from '../types/modelConfig'
 import { createLabelRequestBody } from './aiLabelRules'
 import { createFallbackLabels, parseLabelModelContent } from './labelValidation'
 

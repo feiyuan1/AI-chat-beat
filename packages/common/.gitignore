@@ -3,3 +3,7 @@
 
 # production
 /build
+
+# secrets
+/**/label-model.local.json
+/**/cypto-key.ts

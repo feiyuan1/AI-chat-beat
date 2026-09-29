@@ -18,3 +18,6 @@ export interface Message {
   type: string;
   payload: any;
 }
+
+export * from "../localStorage/types";
+export { type Storage } from "../storage/types";

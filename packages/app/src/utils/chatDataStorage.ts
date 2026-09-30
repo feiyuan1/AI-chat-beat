@@ -1,6 +1,5 @@
 import { log } from "@ai-chat-beat/common";
 import { File, Paths } from "expo-file-system";
-import { Alert } from "react-native";
 
 const CHAT_FILE_URL = "chat_data.jsonl";
 
@@ -30,5 +29,4 @@ export const readDataFromDevice = () => {
 export const deleteDataFromDevice = () => {
   const file = new File(Paths.document, CHAT_FILE_URL);
   file.delete();
-  Alert.alert("delete success");
 };

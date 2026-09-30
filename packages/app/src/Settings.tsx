@@ -7,7 +7,8 @@ import {
 } from "@ai-chat-beat/common";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
-import { Alert, Button, StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
+import OperationButton from "./components/OperationButton";
 import { reportChats } from "./utils";
 import {
   deleteDataFromDevice,
@@ -17,37 +18,50 @@ import {
 const SettingsPage = () => {
   return (
     <View style={styles.container}>
-      <Button
+      <OperationButton
         title="Upload chat data"
-        onPress={async () => {
+        onPress={() => {
           const chatData = readDataFromDevice();
           log("readDataFromDevice", chatData);
           if (!chatData.length) {
+            Alert.alert("No chat data to upload");
             return;
           }
-          ReportChatsMetrics({ chats: chatData });
-          reportChats(chatData);
+          return Promise.all([
+            ReportChatsMetrics({ chats: chatData }),
+            reportChats(chatData),
+          ])
+            .then(() => Alert.alert("Upload chat data success"))
+            .catch(() => Alert.alert("Upload chat data failed"));
         }}
       />
 
-      <Button
+      <OperationButton
         title="clear chat data"
         onPress={() => {
-          Alert.alert(
-            "Confirm Deletion",
-            "Delete all chat data? This cannot be undone.",
-            [
-              {
-                text: "Cancel",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              { text: "Yes", onPress: deleteDataFromDevice },
-            ],
-          );
+          return new Promise((res) => {
+            Alert.alert(
+              "Confirm Deletion",
+              "Delete all chat data? This cannot be undone.",
+              [
+                {
+                  text: "Cancel",
+                  style: "cancel",
+                },
+                {
+                  text: "Yes",
+                  onPress: () => {
+                    res(deleteDataFromDevice());
+                  },
+                },
+              ],
+            );
+          }).then(() => {
+            Alert.alert("Clear chat data success");
+          });
         }}
       />
-      <Button
+      <OperationButton
         title="Upload model config"
         onPress={async () => {
           const files = await DocumentPicker.getDocumentAsync({

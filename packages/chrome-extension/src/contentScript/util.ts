@@ -54,7 +54,7 @@ export const syncBundleInfo = () => {
 }
 
 export const storeFailedLogs = (logs: Log[]) => {
-  chrome.storage.local.get([TargetEnum.reportFailedLogs]).then((result) => {
+  return chrome.storage.local.get([TargetEnum.reportFailedLogs]).then((result) => {
     const oldList = result[TargetEnum.reportFailedLogs] || []
     chrome.storage.local.set({
       [TargetEnum.reportFailedLogs]: oldList.concat(logs),

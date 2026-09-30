@@ -13,13 +13,13 @@ import {
 import { Message, WINDOW_MESSAGE_TYPE } from "../types";
 
 export const reportStroageErrorLogs = async (
-  reportErrorLogs: (logs: Log[]) => void,
+  reportErrorLogs: (logs: Log[]) => Promise<void>,
 ) => {
   const errorLogs = (await getStorageItem(TargetEnum.errorLogs)) || [];
   if (!errorLogs.length) {
     return;
   }
-  reportErrorLogs(errorLogs);
+  await reportErrorLogs(errorLogs);
   await deleteStorageItem(TargetEnum.errorLogs);
 };
 

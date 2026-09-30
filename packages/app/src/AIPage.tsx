@@ -1,9 +1,14 @@
 import {
+  consoleError,
+  CreateMonitorLog,
   handleAIChatRequestMessage,
   Message,
+  MonitorLogType,
   reportFailedLogs,
   reportFailedMetrics,
+  reportLogs,
   reportStroageErrorLogs,
+  storeFailedLogs,
 } from "@ai-chat-beat/common";
 import { Button } from "@react-navigation/elements";
 import { useEffect, useState } from "react";
@@ -23,7 +28,6 @@ const AIPage = () => {
     const show = Keyboard.addListener("keyboardDidShow", (e) => {
       // 减掉底部安全区，避免多顶一截
       const h = Math.max(0, e.endCoordinates.height - insets.bottom);
-      console.log("keyborad height", h, "insets", insets.bottom);
       setKeyboardHeight(h);
     });
     const hide = Keyboard.addListener("keyboardDidHide", () => {
@@ -39,7 +43,7 @@ const AIPage = () => {
   // report errorlogs from injected and adapt
   useEffect(() => {
     reportStroageErrorLogs((logs) => {
-      console.log("RN errorlogs", logs);
+      return reportLogs(logs, true);
     });
   }, []);
 
@@ -53,7 +57,7 @@ const AIPage = () => {
     try {
       const message = JSON.parse(event.nativeEvent.data) as unknown as Message;
       if (message.type === MessageType.INJECTED_ERROR_LOGS) {
-        console.log("RN errorlogs from injected", message.payload);
+        reportLogs(message.payload);
         return;
       }
       await handleAIChatRequestMessage(message, {
@@ -62,7 +66,12 @@ const AIPage = () => {
         },
       });
     } catch (err) {
-      console.error("handle message error: ", err);
+      const errorLog = CreateMonitorLog(
+        `handle message error ${err}`,
+        MonitorLogType.uncaught_error,
+      );
+      storeFailedLogs([errorLog]);
+      consoleError("handle message error: ", err);
     }
   };
 

@@ -1,5 +1,4 @@
 import { handleAIChatRequestMessage, reportStroageErrorLogs } from '@ai-chat-beat/common'
-import { storeFailedLogs } from '../adapters/utils'
 import { CHROME_MESSAGE_TYPE, StoreMessage } from '../types'
 import {
   globalErrorBoundary,
@@ -7,6 +6,7 @@ import {
   initLocalStorage,
   injectScript,
   reStoreMessages,
+  storeFailedLogs,
   syncBundleInfo,
 } from './util'
 

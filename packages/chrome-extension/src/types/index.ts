@@ -1,3 +1,5 @@
+import { StorePayload } from '@ai-chat-beat/common'
+
 export enum WINDOW_MESSAGE_TYPE {
   AI_CHAT_REQUEST = 'AI_CHAT_REQUEST',
 }
@@ -7,23 +9,6 @@ export enum CHROME_MESSAGE_TYPE {
   GET_BUNDLE_TIMESTAMP = 'GET_BUNDLE_TIMESTAMP',
   SAVE_MODEL_CONFIG = 'SAVE_MODEL_CONFIG',
   LOAD_MODEL_CONFIG = 'LOAD_MODEL_CONFIG',
-}
-
-export enum Platform {
-  deepseek = 'deepseek',
-  yuanbao = 'yuanbao',
-  qianwen = 'qianwen',
-  yiyan = 'yiyan',
-  chatglm = 'chatglm',
-  doubao = 'doubao',
-  kimi = 'kimi',
-  chatgpt = 'chatgpt',
-  unknown = 'unknown',
-}
-export interface StorePayload {
-  prompt: string
-  timestamp: number
-  platform: Platform
 }
 
 export interface StoreMessage {

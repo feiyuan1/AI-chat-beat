@@ -1,5 +1,4 @@
-import { StorePayload } from '.'
-import { Log } from '../adapters/utils'
+import { Log, StorePayload } from '@ai-chat-beat/common'
 
 export enum LocalStoragekeys {
   unStoredMessageList = 'unStoredMessageList',

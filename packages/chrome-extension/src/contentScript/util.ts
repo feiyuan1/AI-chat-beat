@@ -1,8 +1,15 @@
-import { initStorage, Storage } from '@ai-chat-beat/common'
-import { CreateMonitorLog, MonitorLogType, storeFailedLogs } from '../adapters/utils'
-import { CHROME_MESSAGE_TYPE, StoreMessage } from '../types'
+import {
+  consoleError,
+  CreateMonitorLog,
+  initStorage,
+  Log,
+  log,
+  MonitorLogType,
+  Storage,
+} from '@ai-chat-beat/common'
+import { appendStorageItem } from '@ai-chat-beat/common/src/storage'
+import { CHROME_MESSAGE_TYPE, StoreMessage, TargetEnum } from '../types'
 import { LocalStoragekeys } from '../types/localStorage'
-import { consoleError, log } from '../utils/debugger'
 import { getLocalStorage, removeLocalStorageKey, setLocalStorage } from '../utils/localStorage'
 
 export function injectScript() {
@@ -24,8 +31,7 @@ export const handleStoreChatMessage = (message: StoreMessage, resolve?: () => vo
 
 export const handleStoreFailed = (err: unknown, message: StoreMessage) => {
   consoleError(err)
-  const oldMessageList = getLocalStorage(LocalStoragekeys.unStoredMessageList) || []
-  setLocalStorage(LocalStoragekeys.unStoredMessageList, oldMessageList.concat(message.payload))
+  appendStorageItem(LocalStoragekeys.unStoredMessageList, message.payload)
 }
 
 /**
@@ -45,6 +51,15 @@ export const syncBundleInfo = () => {
       log('extension version outdated')
     }
   }, 2000)
+}
+
+export const storeFailedLogs = (logs: Log[]) => {
+  chrome.storage.local.get([TargetEnum.reportFailedLogs]).then((result) => {
+    const oldList = result[TargetEnum.reportFailedLogs] || []
+    chrome.storage.local.set({
+      [TargetEnum.reportFailedLogs]: oldList.concat(logs),
+    })
+  })
 }
 
 export const globalErrorBoundary = (fn: () => void) => {

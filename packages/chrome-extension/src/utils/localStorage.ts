@@ -1,4 +1,4 @@
-import { STORAGE_KEY } from '../constants'
+import { STORAGE_KEY } from '@ai-chat-beat/common'
 import { LocalStorageData, LocalStoragekeys } from '../types/localStorage'
 
 export const getLocalStorage = <Key extends LocalStoragekeys>(key: Key) => {

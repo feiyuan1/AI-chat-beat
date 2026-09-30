@@ -1,6 +1,7 @@
 import {
   LabelModelConfig,
   loadLabelModelConfig,
+  log,
   reportChatsWithLabel,
   reportFailedLogs,
   reportFailedMetrics,
@@ -10,7 +11,6 @@ import { ReportChatsMetrics } from '@ai-chat-beat/common/src/monitor'
 import { NOTIFICATION_KEY } from '../constants'
 import { RESOTRE_CHAT_CHROME_LOCAL } from '../constants/dev_env'
 import { CHROME_MESSAGE_TYPE, StoreMessage } from '../types'
-import { log } from '../utils/debugger'
 import { startWsClient } from './dev-client'
 import { handleBatchStore, initChromeStroage } from './util'
 

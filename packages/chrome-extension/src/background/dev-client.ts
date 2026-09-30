@@ -1,4 +1,4 @@
-import { log, consoleError } from '../utils/debugger'
+import { consoleError, log } from '@ai-chat-beat/common'
 
 export const startWsClient = () => {
   const wsClient = new WebSocket('ws://localhost:8000')

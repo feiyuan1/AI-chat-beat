@@ -19,5 +19,6 @@ export interface Message {
   payload: any;
 }
 
+export * from "../adapter/types";
 export * from "../localStorage/types";
 export { type Storage } from "../storage/types";

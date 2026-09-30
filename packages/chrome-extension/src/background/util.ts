@@ -1,13 +1,9 @@
-import { consoleError, initStorage, Storage } from '@ai-chat-beat/common'
-import { StorePayload, TargetEnum } from '../types'
+import { consoleError, initStorage, Storage, StorePayload } from '@ai-chat-beat/common'
+import { appendStorageItem } from '@ai-chat-beat/common/src/storage'
+import { TargetEnum } from '../types'
 
 export const handleBatchStore = (data: StorePayload[]) => {
-  chrome.storage.local.get(TargetEnum.fullChatHistory).then((result) => {
-    const fullData = result[TargetEnum.fullChatHistory] || []
-    return chrome.storage.local.set({
-      [TargetEnum.fullChatHistory]: fullData.concat(data),
-    })
-  })
+  appendStorageItem(TargetEnum.fullChatHistory, data)
 }
 
 const isTargetEnum = (key: string): key is TargetEnum => key in TargetEnum
@@ -40,6 +36,7 @@ const createStorage = (): Storage => ({
     return chrome.storage.local.remove(key)
   },
 })
+
 export const initChromeStroage = () => {
   initStorage(createStorage())
 }

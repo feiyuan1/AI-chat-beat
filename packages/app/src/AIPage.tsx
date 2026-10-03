@@ -4,18 +4,19 @@ import {
   handleAIChatRequestMessage,
   Message,
   MonitorLogType,
+  Platform,
   reportFailedLogs,
   reportFailedMetrics,
   reportLogs,
   reportStroageErrorLogs,
   storeFailedLogs,
 } from "@ai-chat-beat/common";
-import { Button } from "@react-navigation/elements";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Keyboard, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import originalInjected from "../injected.esbuild";
+import PlatformSwitcher, { platforms } from "./components/PlatformSwitcher";
 import { MessageType } from "./types";
 import { saveDataOnDevice } from "./utils/chatDataStorage";
 
@@ -23,6 +24,7 @@ const injected = originalInjected as unknown as string;
 const AIPage = () => {
   const insets = useSafeAreaInsets();
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [current, setCurrent] = useState<Platform>(Platform.deepseek);
 
   useEffect(() => {
     const show = Keyboard.addListener("keyboardDidShow", (e) => {
@@ -75,20 +77,22 @@ const AIPage = () => {
     }
   };
 
+  const uri: string = useMemo(() => {
+    return platforms.find((p) => p.name === current)!.url;
+  }, [current]);
+
   return (
     <View style={styles.container}>
       <WebView
         source={{
-          uri: "https://chat.deepseek.com/a/chat/s/12087204-b6a2-4d01-bf1a-9747fb8657cf",
+          uri,
         }}
         style={{ marginBottom: keyboardHeight }}
         webviewDebuggingEnabled={true}
         injectedJavaScriptBeforeContentLoaded={injected}
         onMessage={onMessage}
       />
-      <Button screen="Settings" params={{}} style={styles.button}>
-        settings
-      </Button>
+      <PlatformSwitcher current={current} updateCurrent={setCurrent} />
     </View>
   );
 };

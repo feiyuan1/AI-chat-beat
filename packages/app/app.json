@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "AI-chat-beat-app",
-    "slug": "AI-chat-beat-app",
+    "name": "AI-chat-beat",
+    "slug": "AI-chat-beat",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

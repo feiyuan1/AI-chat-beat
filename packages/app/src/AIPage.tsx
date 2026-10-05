@@ -10,12 +10,12 @@ import {
   reportStroageErrorLogs,
   storeFailedLogs,
 } from "@ai-chat-beat/common";
-import { useEffect, useState } from "react";
-import { Keyboard, StyleSheet, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 import { WebView } from "react-native-webview";
 import originalInjected from "../injected.esbuild";
 import PlatformSwitcher from "./components/PlatformSwitcher";
+import useKeyboardInset from "./hooks/useKeyboardInset";
 import useLastUsedSession from "./hooks/useLastUsedPlatformSession";
 import { MessageType } from "./types";
 import { saveDataOnDevice } from "./utils/chatDataStorage";
@@ -23,26 +23,9 @@ import { saveDataOnDevice } from "./utils/chatDataStorage";
 const injected = originalInjected as unknown as string;
 
 const AIPage = () => {
-  const insets = useSafeAreaInsets();
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const keyboardInset = useKeyboardInset();
   const { platform, sessionUrl, updatePlatform, updateSession } =
     useLastUsedSession();
-
-  useEffect(() => {
-    const show = Keyboard.addListener("keyboardDidShow", (e) => {
-      // 减掉底部安全区，避免多顶一截
-      const h = Math.max(0, e.endCoordinates.height - insets.bottom);
-      setKeyboardHeight(h);
-    });
-    const hide = Keyboard.addListener("keyboardDidHide", () => {
-      setKeyboardHeight(insets.bottom);
-    });
-
-    return () => {
-      show.remove();
-      hide.remove();
-    };
-  }, []);
 
   // report errorlogs from injected and adapt
   useEffect(() => {
@@ -89,7 +72,7 @@ const AIPage = () => {
         source={{
           uri: sessionUrl,
         }}
-        style={{ marginBottom: keyboardHeight }}
+        style={{ marginBottom: keyboardInset }}
         webviewDebuggingEnabled={true}
         injectedJavaScriptBeforeContentLoaded={injected}
         onMessage={onMessage}

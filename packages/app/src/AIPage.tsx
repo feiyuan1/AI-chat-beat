@@ -4,27 +4,29 @@ import {
   handleAIChatRequestMessage,
   Message,
   MonitorLogType,
-  Platform,
   reportFailedLogs,
   reportFailedMetrics,
   reportLogs,
   reportStroageErrorLogs,
   storeFailedLogs,
 } from "@ai-chat-beat/common";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Keyboard, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { WebView } from "react-native-webview";
 import originalInjected from "../injected.esbuild";
-import PlatformSwitcher, { platforms } from "./components/PlatformSwitcher";
+import PlatformSwitcher from "./components/PlatformSwitcher";
+import useLastUsedSession from "./hooks/useLastUsedPlatformSession";
 import { MessageType } from "./types";
 import { saveDataOnDevice } from "./utils/chatDataStorage";
 
 const injected = originalInjected as unknown as string;
+
 const AIPage = () => {
   const insets = useSafeAreaInsets();
   const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const [current, setCurrent] = useState<Platform>(Platform.deepseek);
+  const { platform, sessionUrl, updatePlatform, updateSession } =
+    useLastUsedSession();
 
   useEffect(() => {
     const show = Keyboard.addListener("keyboardDidShow", (e) => {
@@ -62,6 +64,10 @@ const AIPage = () => {
         reportLogs(message.payload);
         return;
       }
+      if (message.type === MessageType.UPDATE_SESSION) {
+        updateSession(message.payload as string);
+        return;
+      }
       await handleAIChatRequestMessage(message, {
         resolve: (result) => {
           saveDataOnDevice([result]);
@@ -77,22 +83,18 @@ const AIPage = () => {
     }
   };
 
-  const uri: string = useMemo(() => {
-    return platforms.find((p) => p.name === current)!.url;
-  }, [current]);
-
   return (
     <View style={styles.container}>
       <WebView
         source={{
-          uri,
+          uri: sessionUrl,
         }}
         style={{ marginBottom: keyboardHeight }}
         webviewDebuggingEnabled={true}
         injectedJavaScriptBeforeContentLoaded={injected}
         onMessage={onMessage}
       />
-      <PlatformSwitcher current={current} updateCurrent={setCurrent} />
+      <PlatformSwitcher current={platform} updateCurrent={updatePlatform} />
     </View>
   );
 };

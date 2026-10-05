@@ -16,9 +16,32 @@ const reportErrorLogs = () => {
   removeLocalStorageKey(LocalStoragekeys.errorLogs);
 };
 
+const getAbsoluteUrl = (url: string) => {
+  if (url.startsWith("https://")) {
+    return url;
+  }
+  return new URL(url, location.href).href;
+};
+const listenHistoryState = () => {
+  const originalPushState = history.pushState;
+  history.pushState = function (...args) {
+    originalPushState.apply(this, args);
+    const originalUrl = args[2] as string;
+    if (!originalUrl.includes("/chat/")) {
+      return;
+    }
+    const url = getAbsoluteUrl(originalUrl);
+    postMessage({
+      type: MessageType.UPDATE_SESSION,
+      payload: url,
+    });
+  };
+};
+
 const init = () => {
   reportErrorLogs();
   injectedScript();
+  listenHistoryState();
 };
 
 try {

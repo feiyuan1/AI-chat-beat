@@ -34,7 +34,6 @@ export const platforms: PlatformInfo[] = [
 const ListWidth = 200;
 const ListItemHeight = 40;
 const SettingsHeight = 55;
-const initialX = 300;
 const initialY = 30;
 const renderSize = 40;
 // marginTop - 5
@@ -47,7 +46,8 @@ const PlatformSwitcher = ({
   current: Platform;
   updateCurrent: (platform: Platform) => void;
 }) => {
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
+  const initialX = width - 20 - renderSize;
   const [modalVisible, setModalVisible] = useState(false);
   const [animationStyle, updateAnimationStyle] = useState({
     transform: [{ translateX: initialX - ListWidth }, { translateY: initialY }],

@@ -74,6 +74,11 @@ const AIPage = () => {
         }}
         style={{ marginBottom: keyboardInset }}
         webviewDebuggingEnabled={true}
+        // ios
+        scalesPageToFit={false}
+        // android
+        setBuiltInZoomControls={false}
+        setDisplayZoomControls={false}
         injectedJavaScriptBeforeContentLoaded={injected}
         onMessage={onMessage}
       />

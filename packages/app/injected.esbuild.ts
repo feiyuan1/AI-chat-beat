@@ -36,6 +36,20 @@ const listenHistoryState = () => {
       payload: url,
     });
   };
+
+  const originalReplaceState = history.replaceState;
+  history.replaceState = function (...args) {
+    originalReplaceState.apply(this, args);
+    const originalUrl = args[2] as string;
+    if (!originalUrl.includes("/chat/")) {
+      return;
+    }
+    const url = getAbsoluteUrl(originalUrl);
+    postMessage({
+      type: MessageType.UPDATE_SESSION,
+      payload: url,
+    });
+  };
 };
 
 const init = () => {

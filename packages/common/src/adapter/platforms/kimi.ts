@@ -15,6 +15,13 @@ const parseKimiBody = (body: unknown): any => {
     const text = new TextDecoder().decode(content);
     return JSON.parse(text);
   }
+  if (body && typeof body === "object") {
+    const array = Object.values(body);
+    const unit8Array = new Uint8Array(array);
+    const content = unit8Array.slice(5);
+    const text = new TextDecoder().decode(content);
+    return JSON.parse(text);
+  }
   throw new Error("kimi request body must be Uint8Array");
 };
 

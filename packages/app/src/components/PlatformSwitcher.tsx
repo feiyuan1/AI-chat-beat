@@ -23,11 +23,11 @@ interface PlatformInfo {
 export const platforms: PlatformInfo[] = [
   { name: Platform.deepseek, url: "https://chat.deepseek.com/" },
   { name: Platform.kimi, url: "https://www.kimi.com/" },
-  { name: Platform.yuanbao, url: "https://yuanbao.tencent.com/" },
+  { name: Platform.doubao, url: "https://www.doubao.com/" },
   { name: Platform.qianwen, url: "https://www.qianwen.com/" },
   { name: Platform.yiyan, url: "https://wenxin.baidu.com/" },
   { name: Platform.chatglm, url: "https://chatglm.cn/" },
-  { name: Platform.doubao, url: "https://www.doubao.com/" },
+  { name: Platform.yuanbao, url: "https://yuanbao.tencent.com/" },
   { name: Platform.chatgpt, url: "https://chatgpt.com/" },
 ];
 

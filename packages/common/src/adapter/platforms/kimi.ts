@@ -17,6 +17,9 @@ const parseKimiBody = (body: unknown): any => {
   }
   if (body && typeof body === "object") {
     const array = Object.values(body);
+    if (!array.every((v) => typeof v === "number" && v >= 0 && v <= 255)) {
+      throw new Error("unexpected body format: not a uint8 array");
+    }
     const unit8Array = new Uint8Array(array);
     const content = unit8Array.slice(5);
     const text = new TextDecoder().decode(content);

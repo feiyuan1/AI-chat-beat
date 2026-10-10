@@ -25,12 +25,17 @@ const getAbsoluteUrl = (url: string) => {
 const listenHistoryState = () => {
   const originalPushState = history.pushState;
   history.pushState = function (...args) {
-    originalPushState.apply(this, args);
-    const originalUrl = args[2] as string;
-    if (!originalUrl.includes("/chat/")) {
+    const originalUrl = args[2];
+    if (!originalUrl) {
       return;
     }
-    const url = getAbsoluteUrl(originalUrl);
+    const originalUrlString =
+      typeof originalUrl === "string" ? originalUrl : originalUrl.href;
+    originalPushState.apply(this, args);
+    if (!originalUrlString.includes("/chat/")) {
+      return;
+    }
+    const url = getAbsoluteUrl(originalUrlString);
     postMessage({
       type: MessageType.UPDATE_SESSION,
       payload: url,
@@ -40,11 +45,16 @@ const listenHistoryState = () => {
   const originalReplaceState = history.replaceState;
   history.replaceState = function (...args) {
     originalReplaceState.apply(this, args);
-    const originalUrl = args[2] as string;
-    if (!originalUrl.includes("/chat/")) {
+    const originalUrl = args[2];
+    if (!originalUrl) {
       return;
     }
-    const url = getAbsoluteUrl(originalUrl);
+    const originalUrlString =
+      typeof originalUrl === "string" ? originalUrl : originalUrl.href;
+    if (!originalUrlString.includes("/chat/")) {
+      return;
+    }
+    const url = getAbsoluteUrl(originalUrlString);
     postMessage({
       type: MessageType.UPDATE_SESSION,
       payload: url,

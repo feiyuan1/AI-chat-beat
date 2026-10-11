@@ -15,7 +15,7 @@ const createStorage = (): Storage => ({
       throw new Error('Invalid Chrome Storage key from get action')
     }
     return chrome.storage.local.get(key).then((result) => {
-      if (key === TargetEnum.labelModelConfig) {
+      if (key === TargetEnum.labelModelConfig || key === TargetEnum.apiUserInfo) {
         return result[key]
       }
       return result[key] || []

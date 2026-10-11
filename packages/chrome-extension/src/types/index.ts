@@ -9,6 +9,8 @@ export enum CHROME_MESSAGE_TYPE {
   GET_BUNDLE_TIMESTAMP = 'GET_BUNDLE_TIMESTAMP',
   SAVE_MODEL_CONFIG = 'SAVE_MODEL_CONFIG',
   LOAD_MODEL_CONFIG = 'LOAD_MODEL_CONFIG',
+  SAVE_API_USER_INFO = 'SAVE_API_USER_INFO',
+  LOAD_API_USER_INFO = 'LOAD_API_USER_INFO',
 }
 
 export interface StoreMessage {
@@ -22,6 +24,8 @@ export enum TargetEnum {
   reportFailedLogs = 'reportFailedLogs',
   reportFailedMetrics = 'reportFailedMetrics',
   labelModelConfig = 'labelModelConfig',
+  /** api user info */
+  apiUserInfo = 'apiUserInfo',
 }
 
 export interface StoreChromeLocalError {

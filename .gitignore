@@ -1,3 +1,6 @@
 
 # dependencies
 node_modules/
+
+# secret
+grafana_api_token.md

@@ -5,11 +5,11 @@
     "types": ["node"],
     "moduleResolution": "bundler",
     "target": "esnext",
-    "outDir": "monitor",
-    "rootDir": "./scripts",
-    "tsBuildInfoFile": "./monitor/monitor.tsbuildinfo",
+    "outDir": "build",
+    "rootDir": "src",
+    "tsBuildInfoFile": "./build/tsconfig.tsbuildinfo",
     "skipLibCheck": true
   },
-  "include": ["scripts/monitor-metric-reporter.ts"],
+  "include": ["src"],
   "exclude": ["**/**.d.ts"]
 }

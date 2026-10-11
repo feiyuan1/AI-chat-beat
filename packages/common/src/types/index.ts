@@ -20,5 +20,6 @@ export interface Message {
 }
 
 export * from "../adapter/types";
+export { type ApiUserInfo } from "../api-user-info/types";
 export * from "../localStorage/types";
 export { type Storage } from "../storage/types";

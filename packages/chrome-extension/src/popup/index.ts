@@ -1,5 +1,6 @@
 import { log } from '@ai-chat-beat/common'
 import { CHROME_MESSAGE_TYPE } from '../types'
+import { initApiUserInfoForm } from './api-user-info'
 import { initConfigForm } from './model-config'
 
 const createExportFullAnchorElement = function () {
@@ -64,3 +65,4 @@ exportFullDataButton.onclick = exportFullData
 
 createReportInput()
 initConfigForm()
+initApiUserInfoForm()

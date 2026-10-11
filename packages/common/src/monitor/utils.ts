@@ -1,5 +1,7 @@
+import { encode } from "base-64";
 import { appendStorageItem, TargetEnum } from "../storage";
-import { consoleError, log } from "../utils";
+import { ApiUserInfo } from "../types";
+import { consoleError, loadApiUserInfo, log } from "../utils";
 import { Log, MonitorLog, MonitorLogType, Sample } from "./types";
 
 export const CreateMonitorLog = (
@@ -42,12 +44,23 @@ const safeResponseToJson = async (response: Response) => {
   return { headers, ok, redirected, status, statusText, type, url };
 };
 
+const getAuthorization = async () => {
+  const info = (await loadApiUserInfo()) as ApiUserInfo;
+  if (!info) {
+    throw new Error("user info not configured");
+  }
+  return "Basic " + encode(`${info.username}:${info.password}`);
+};
+
 export const reportMetrics = async (metrics: Sample[], isRestore = false) => {
   const body = metrics.map((metric) => JSON.stringify(metric)).join("\n");
   log("report metrics body", body);
   return fetch("http://127.0.0.1:8428/api/v1/import", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: await getAuthorization(),
+    },
     body, // JSON Lines 格式
   })
     .then((response) => {
@@ -89,7 +102,10 @@ export const reportLogs = async (logs: Log[], isRestore = false) => {
     "http://127.0.0.1:9428/insert/jsonline?_stream_fields=session_name",
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: await getAuthorization(),
+      },
       body, // JSON Lines 格式
     },
   )

@@ -13,4 +13,6 @@ export enum TargetEnum {
   reportFailedLogs = "reportFailedLogs",
   reportFailedMetrics = "reportFailedMetrics",
   labelModelConfig = "labelModelConfig",
+  /** api user info */
+  apiUserInfo = "apiUserInfo",
 }

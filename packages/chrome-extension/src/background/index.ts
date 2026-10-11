@@ -1,10 +1,13 @@
 import {
+  ApiUserInfo,
   LabelModelConfig,
+  loadApiUserInfo,
   loadLabelModelConfig,
   log,
   reportChatsWithLabel,
   reportFailedLogs,
   reportFailedMetrics,
+  saveApiUserInfo,
   saveLabelModelConfig,
 } from '@ai-chat-beat/common'
 import { ReportChatsMetrics } from '@ai-chat-beat/common/src/monitor'
@@ -72,6 +75,32 @@ chrome.runtime.onMessage.addListener(
       loadLabelModelConfig().then((config) => {
         sendResponse(config)
       })
+      return true
+    }
+  },
+)
+
+chrome.runtime.onMessage.addListener(
+  (message: { type: CHROME_MESSAGE_TYPE }, _sender, sendResponse) => {
+    if (message.type === CHROME_MESSAGE_TYPE.LOAD_API_USER_INFO) {
+      loadApiUserInfo().then((userinfo) => {
+        sendResponse(userinfo)
+      })
+      return true
+    }
+  },
+)
+
+chrome.runtime.onMessage.addListener(
+  (message: { type: CHROME_MESSAGE_TYPE; payload: ApiUserInfo }, _sender, sendResponse) => {
+    if (message.type === CHROME_MESSAGE_TYPE.SAVE_API_USER_INFO) {
+      saveApiUserInfo(message.payload)
+        .then(() => {
+          sendResponse({ type: 'success' })
+        })
+        .catch((err) => {
+          sendResponse({ type: 'error', error: err })
+        })
       return true
     }
   },

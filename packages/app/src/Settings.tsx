@@ -8,6 +8,7 @@ import {
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { Alert, StyleSheet, View } from "react-native";
+import ApiUserInfoForm from "./components/ApiUserInfoForm";
 import OperationButton from "./components/OperationButton";
 import { reportChats } from "./utils";
 import {
@@ -81,6 +82,7 @@ const SettingsPage = () => {
           }
         }}
       />
+      <ApiUserInfoForm />
     </View>
   );
 };

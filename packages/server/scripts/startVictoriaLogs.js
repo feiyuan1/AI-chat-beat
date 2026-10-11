@@ -16,5 +16,5 @@ run("victoria-logs", [
   "-httpAuth.username",
   "admin",
   "-httpAuth.password",
-  password,
+  password.trim(),
 ]);

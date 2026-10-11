@@ -19,7 +19,7 @@ const startVictoriaMetrics = async () => {
     "-httpAuth.username",
     "admin",
     "-httpAuth.password",
-    password,
+    password.trim(),
   ]);
 };
 

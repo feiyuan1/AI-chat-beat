@@ -1,5 +1,6 @@
 import { Platform } from "@ai-chat-beat/common";
 import { Ionicons } from "@react-native-vector-icons/ionicons";
+import { useLinkTo } from "@react-navigation/native";
 import { useCallback, useState } from "react";
 import {
   Image,
@@ -52,7 +53,7 @@ const PlatformSwitcher = ({
   const [animationStyle, updateAnimationStyle] = useState({
     transform: [{ translateX: initialX - ListWidth }, { translateY: initialY }],
   });
-
+  const linkTo = useLinkTo();
   const onPress = useCallback(() => {
     setModalVisible(true);
   }, []);
@@ -143,6 +144,7 @@ const PlatformSwitcher = ({
                 style={styles.settings}
                 onPress={() => {
                   setModalVisible(false);
+                  linkTo("/Settings");
                 }}
               >
                 <Text style={styles.settingsText}>Settings</Text>

@@ -2,8 +2,10 @@ import path from "path";
 import appHome from "./getAppHomePath.js";
 import run from "./run.js";
 
-run("grafana ", [
+run("grafana", [
   "server",
   "--homepath",
-  path.join(appHome, "grafana", "grafana"),
+  process.platform === "win32"
+    ? path.join(appHome, "grafana", "grafana")
+    : path.join(appHome, "grafana"),
 ]);

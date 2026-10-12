@@ -1,8 +1,8 @@
 import path from "path";
 import run from "./run.js";
 
-const worksapce = process.env.AI_CHAT_BEAT_HOME;
-if (!worksapce) {
+const workspace = process.env.AI_CHAT_BEAT_HOME;
+if (!workspace) {
   throw new Error("AI_CHAT_BEAT_HOME is not configured");
 }
 
@@ -13,7 +13,7 @@ const startMonitor = async () => {
   }
 
   run("npm", ["run", "start:monitor"], {
-    cwd: path.join(worksapce, "packages", "server"),
+    cwd: path.join(workspace, "packages", "server"),
   });
 };
 

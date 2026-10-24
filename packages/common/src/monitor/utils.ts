@@ -55,7 +55,7 @@ const getAuthorization = async () => {
 export const reportMetrics = async (metrics: Sample[], isRestore = false) => {
   const body = metrics.map((metric) => JSON.stringify(metric)).join("\n");
   log("report metrics body", body);
-  return fetch("http://127.0.0.1:8428/api/v1/import", {
+  return fetch("https://metric.feiyuanbala.cn/api/v1/import", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -99,7 +99,7 @@ export const reportLogs = async (logs: Log[], isRestore = false) => {
   const body = logs.map((log) => JSON.stringify(log)).join("\n");
   log("report log body", body);
   return fetch(
-    "http://127.0.0.1:9428/insert/jsonline?_stream_fields=session_name",
+    "https://log.feiyuanbala.cn/insert/jsonline?_stream_fields=session_name",
     {
       method: "POST",
       headers: {

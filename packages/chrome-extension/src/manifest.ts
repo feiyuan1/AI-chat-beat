@@ -21,6 +21,8 @@ export default defineManifest({
     'https://chatgpt.com/*',
     'http://127.0.0.1:8428/*',
     'http://127.0.0.1:9428/*',
+    'https://log.feiyuanbala.cn/*',
+    'https://metric.feiyuanbala.cn/*'
   ],
   action: {
     default_popup: 'popup.html',

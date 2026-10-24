@@ -19,11 +19,12 @@ const password = readFileSync(
 export const reportLogs = async (logs: Log[]) => {
   const body = logs.map((log) => JSON.stringify(log)).join("\n");
   console.log("【report metric error to logs】", body, "\n");
-  return fetch("http://127.0.0.1:9428/insert/jsonline", {
+  return fetch("https://log.feiyuanbala.cn/insert/jsonline", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Basic ${password}`,
+      Authorization:
+        "Basic " + Buffer.from(`admin:${password}`).toString("base64"),
     },
     body, // JSON Lines 格式
   });

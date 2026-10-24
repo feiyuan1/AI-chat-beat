@@ -1,0 +1,6 @@
+{
+  "deno.enable": false,
+  "deno.enablePaths": ["packages/agent"],
+  "deno.path": "D:\\app\\nvm\\v24.21.0\\node_modules\\deno\\deno.exe",
+  "cSpell.words": ["deepseek"]
+}

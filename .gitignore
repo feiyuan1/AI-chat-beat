@@ -4,3 +4,6 @@ node_modules/
 
 # secret
 grafana_api_token.md
+
+# test code
+packages/agent-node

@@ -10,13 +10,19 @@ const chatsToJsonl = (chats: Chat[]) => {
 };
 
 const jsonlToChats = (jsonl: string) => {
-  return jsonl.split("\n").map((line) => JSON.parse(line) as Chat);
+  return jsonl
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as Chat);
 };
 
 export const saveDataOnDevice = (chats: Chat[]) => {
   const data = chatsToJsonl(chats);
   const file = new File(Paths.document, CHAT_FILE_URL);
-  file.write(data);
+  if (!file.exists) {
+    file.create();
+  }
+  file.write(file.textSync() + data + "\n");
   log("saveDataOnDevice", file.textSync());
 };
 

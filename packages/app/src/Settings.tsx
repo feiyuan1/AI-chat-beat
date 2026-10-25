@@ -29,10 +29,13 @@ const SettingsPage = () => {
             return;
           }
           return Promise.all([
-            ReportChatsMetrics({ chats: chatData }),
+            ReportChatsMetrics({ chats: chatData, aggregate: false }),
             reportChats(chatData),
           ])
-            .then(() => Alert.alert("Upload chat data success"))
+            .then(() => {
+              Alert.alert("Upload chat data success");
+              deleteDataFromDevice();
+            })
             .catch(() => Alert.alert("Upload chat data failed"));
         }}
       />

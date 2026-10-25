@@ -4,6 +4,7 @@ import {
   createAdapterErrorBoundary,
   createPlatformError,
   createSuccess,
+  parseCommonProps,
 } from "./utils";
 
 const platformError = createPlatformError(Platform.kimi);
@@ -54,7 +55,6 @@ export const ChatDataAdapter = createAdapterErrorBoundary<
 
   return createSuccess({
     prompt: block.text.content,
-    platform: data.platform,
-    timestamp: data.timestamp,
+    ...parseCommonProps(data),
   });
 });

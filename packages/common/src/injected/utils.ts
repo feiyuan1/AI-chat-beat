@@ -80,3 +80,24 @@ export const reportError = (err: unknown) => {
   setLocalStorage(LocalStoragekeys.errorLogs, oldErrorLogs.concat(errorLog));
   consoleError("injectErrorBoundary", err);
 };
+
+export function getDeviceType() {
+  const ua = navigator.userAgent.toLowerCase();
+
+  // 1. 判断 iPad
+  // 兼容 iPadOS 13+ (UA 是 Macintosh 但支持触摸)
+  const isIPad =
+    /ipad/.test(ua) || (/macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  if (isIPad) return "pad";
+
+  // 2. 判断 Android Pad (包含 android 但不包含 mobile)
+  if (/android/.test(ua) && !/mobile/.test(ua)) return "pad";
+
+  // 3. 判断其他平板设备 (如 Windows 平板等，通常有 tablet 关键字)
+  if (/tablet|playbook|silk/i.test(ua)) return "pad";
+
+  // 4. 判断手机
+  if (/mobile|iphone|ipod|android|blackberry|phone/i.test(ua)) return "mobile";
+
+  return "desktop";
+}

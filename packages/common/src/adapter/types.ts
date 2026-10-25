@@ -22,4 +22,5 @@ export interface StorePayload {
   prompt: string;
   timestamp: number;
   platform: Platform;
+  device: string;
 }

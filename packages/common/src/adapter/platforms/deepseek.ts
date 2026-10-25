@@ -5,6 +5,7 @@ import {
   createPlatformError,
   createSuccess,
   parseChatRequestBody,
+  parseCommonProps,
 } from "./utils";
 
 const platformError = createPlatformError(Platform.deepseek);
@@ -25,7 +26,6 @@ export const ChatDataAdapter = createAdapterErrorBoundary<
   }
   return createSuccess({
     prompt: body.prompt,
-    platform: data.platform,
-    timestamp: data.timestamp,
+    ...parseCommonProps(data),
   });
 });

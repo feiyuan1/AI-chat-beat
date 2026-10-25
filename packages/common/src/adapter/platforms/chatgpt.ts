@@ -5,6 +5,7 @@ import {
   createPlatformError,
   createSuccess,
   parseChatRequestBody,
+  parseCommonProps,
 } from "./utils";
 
 const platformError = createPlatformError(Platform.chatgpt);
@@ -66,7 +67,6 @@ export const ChatDataAdapter = createAdapterErrorBoundary<
 
   return createSuccess({
     prompt,
-    platform: data.platform,
-    timestamp: data.timestamp,
+    ...parseCommonProps(data),
   });
 });

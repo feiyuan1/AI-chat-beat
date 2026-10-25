@@ -5,6 +5,7 @@ import {
   createPlatformError,
   createSuccess,
   parseChatRequestBody,
+  parseCommonProps,
 } from "./utils";
 
 const platformError = createPlatformError(Platform.yiyan);
@@ -35,7 +36,6 @@ export const ChatDataAdapter = createAdapterErrorBoundary<
 
   return createSuccess({
     prompt: item.data.text.query,
-    platform: data.platform,
-    timestamp: data.timestamp,
+    ...parseCommonProps(data),
   });
 });

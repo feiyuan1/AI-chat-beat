@@ -51,3 +51,9 @@ export function createAdapterErrorBoundary<T extends AdaptResult>(
     }
   };
 }
+
+export const parseCommonProps = (data: any) => ({
+  platform: data.platform,
+  timestamp: data.timestamp,
+  device: data.device,
+});

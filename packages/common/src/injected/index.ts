@@ -3,6 +3,7 @@ import { postMessage } from "../utils";
 import { log } from "../utils/debugger";
 import {
   detectPlatform,
+  getDeviceType,
   getPath,
   isPlatformChatRequest,
   reportError,
@@ -30,6 +31,7 @@ const innerScript = () => {
           body,
           timestamp: Date.now(),
           platform,
+          device: getDeviceType(),
         },
       });
     } catch (err) {

@@ -4,6 +4,7 @@ import {
   handleAIChatRequestMessage,
   Message,
   MonitorLogType,
+  ReportChatsMetrics,
   reportFailedLogs,
   reportFailedMetrics,
   reportLogs,
@@ -18,7 +19,7 @@ import PlatformSwitcher from "./components/PlatformSwitcher";
 import useKeyboardInset from "./hooks/useKeyboardInset";
 import useLastUsedSession from "./hooks/useLastUsedPlatformSession";
 import { MessageType } from "./types";
-import { saveDataOnDevice } from "./utils/chatDataStorage";
+import { reportChats } from "./utils";
 
 const injected = originalInjected as unknown as string;
 
@@ -53,7 +54,8 @@ const AIPage = () => {
       }
       await handleAIChatRequestMessage(message, {
         resolve: (result) => {
-          saveDataOnDevice([result]);
+          reportChats([result]);
+          ReportChatsMetrics({ chats: [result] });
         },
       });
     } catch (err) {
